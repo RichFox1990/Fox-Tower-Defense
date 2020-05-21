@@ -1,0 +1,27 @@
+TO DO LIST:
+
+Bottom bar status (time, money, wave, next wave etc)
+- decide if you build tower from this bar or another side bar
+** partly implemented - build towers and HUD info moved down
+
+- change timers to ensure they dont continue if game is paused
+
+use image for the tower upgrading
+** decide on button style **done
+- make tech tree/ level limits for towers (dict, variables etc)
+- consider using JSON?
+
+Direct fire towers
+- archer, magic **archer done**
+- edit/add the shooting functions for it (add variable to towers to track the type of fire)
+
+flying mobs
+- direct fire can only attack these
+- leave normal rect at shadow, add second draw rect with value of y addded to appear flying
+- also add slight "wobble"  (-5,+5)
+
+use a game function to calculate what mobs are within tower radius, pass this list to 
+the towers instead of the towers iterating through the whole list each
+
+tidy up main update of mobs, towers, main
+- delte obselete functions and rewrite/ condesnse some (srface_buttons etc)
