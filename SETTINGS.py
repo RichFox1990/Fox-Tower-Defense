@@ -12,6 +12,9 @@ FPS = 60
 TILESIZE = 32
 HUD_IMAGE_SIZE = (30,30)
 
+# Mob wave for the game - dictionary of a nested list of mobs and the number to spawn - Edit and add to your liking
+WAVES = {1: [["Orc", 15], ["Scorpion", 0], ["Purple_Hippo", 0]], 2: [["Orc", 10], ["Scorpion", 15], ["Purple_Hippo", 0]], 3: [["Orc", 15], ["Scorpion", 15], ["Purple_Hippo", 10]], 4: [["Orc", 20], ["Scorpion", 25], ["Purple_Hippo", 20]]}
+
 # Mob setting
 MOBSIZE = 20
 MOBSLIM = 26

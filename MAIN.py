@@ -60,6 +60,8 @@ class Game:
 		self.player = pg.sprite.Group()
 		self.coins = pg.sprite.Group()
 
+		self.spawn_mobs = {"Orc": Orc, "Scorpion": Scorpion, "Purple_Hippo": Purple_Hippo}
+
 	# RUNS ON __init__ , CALLS VARIOUS METHODS TO SET UP INITIAL DATA AS STATED BELOW
 	def new(self):
 		# Loads map data from txt file
@@ -225,6 +227,8 @@ class Game:
 		self.skip_font = pg.font.Font(None, 35, bold=True)
 		self.skip_text = outline_text(self.skip_font, "Press 'S' to commense to the next wave early", colours["white"], colours["black"])
 		self.skip_text_rect = self.skip_text.get_rect(center = self.bottom_bar_rect.midtop + vec(0, -25))
+		self.win_text = outline_text(self.skip_font, "LEVEL COMPLETE", colours["white"], colours["black"])
+		self.win_text_rect = self.win_text.get_rect(center=self.screen_rect.center)
 
 		self.construct_rect = self.images["build_hammer"].get_rect(midbottom=self.bottom_bar_rect.midbottom)
 
@@ -246,14 +250,15 @@ class Game:
 
 	# Basic implementation of waves (TODO: pack data into different form and make more elegant)
 	def setup_waves(self):
+		self.level_complete = False
 		self.wave_active = False
 		self.wave_complete = False
 		self.pre_wave_setup = True 	# Variable used to not add to the wave number during the first pregame timer
 		self.next_wave_timer = WAVETIMER
 
-		self.waves = [[[0, 10], [1, 15], [2, 0]], [[0, 10], [1, 10], [2, 0]], [[0, 10], [1, 20], [2, 5]], [[0, 10], [1, 25], [2, 20]]]
+		self.waves = WAVES
 
-		self.wave_number = 0
+		self.wave_number = 1
 
 		self.wave = self.waves[self.wave_number]
 
@@ -261,7 +266,6 @@ class Game:
 	def handle_wave(self, dt, time_delay = 0.5):  # SPAWNS MOBS
 
 		self.mob_timer += dt
-		mob = [Orc, Scorpion, Purple_Hippo]
 		self.wave = self.waves[self.wave_number]  # [MOB ID, AMOUNT TO SPAWN]
 
 
@@ -285,7 +289,7 @@ class Game:
 				# print(f"{self.wave}")
 				if self.wave[num][1] > 0:
 					self.wave[num][1] -= 1
-					mob[self.wave[num][0]](self)  # Spawn that refence mob (passing the game instance into the class)
+					self.spawn_mobs[self.wave[num][0]](self)  # Spawn that refence mob (passing the game instance into the class)
 
 				self.mob_timer = 0  # reset time
 			elif len(self.mobs) == 0:
@@ -298,6 +302,12 @@ class Game:
 	def next_wave(self):
 		if not self.pre_wave_setup:
 			self.wave_number += 1
+		if self.wave_number > len(self.waves):
+			print("level complete!")
+			self.wave_number = 0
+			self.level_complete = True
+		else:
+			print("wave ", self.wave_number+1)
 		self.pre_wave_setup = False
 		self.wave_complete = False
 		self.wave = self.waves[self.wave_number]
@@ -482,8 +492,10 @@ class Game:
 		if self.selected_tower != False:
 			self.selected_tower.menu.draw(screen)
 
-		if not self.wave_active:
+		if not self.wave_active and not self.level_complete:
 			screen.blit(self.skip_text, self.skip_text_rect)
+		elif self.level_complete:
+			screen.blit(self.win_text, self.win_text_rect)
 
 		self.draw_HUD(screen)
 
@@ -533,7 +545,6 @@ class Game:
 					if event.key == pg.K_i:  # and self.delay_counter == 0:
 						# self.delay_counter = 1
 						self.draw_overlay = not self.draw_overlay
-						self.print = True
 
 					if event.key == pg.K_s:
 						if not self.wave_active:
