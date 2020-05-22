@@ -114,16 +114,19 @@ class Mob(pg.sprite.Sprite):
 
 		if self.target_direction == "x":
 			self.desired = vec(vec(target + self.offset, self.pos.y) - self.pos)
+			self.dist_from_target = abs(self.desired.x - self.offset)
 
 		if self.target_direction == "y":
 			self.desired = vec(vec(self.pos.x, target + self.offset - self.height/1.5) - self.pos)
+			self.dist_from_target = abs(self.desired.y - self.offset + self.height/1.5)
 
 		dist = self.desired.length()
 		
 		move_to = self.desired
 
+
 		if move_to.length() > 0:
-			move_to.normalize_ip()
+			move_to = move_to.normalize()
 
 		if dist <= 1:
 			self.path_update()
@@ -135,6 +138,8 @@ class Mob(pg.sprite.Sprite):
 			self.vel = move_to * (self.speed*dt)
 
 		self.pos += self.vel
+
+
 
 
 	# This gets called to change the mobs "turn_count", this is used as a counter to choose the mobs next postional target to walk to. 

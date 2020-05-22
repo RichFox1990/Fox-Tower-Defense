@@ -39,6 +39,7 @@ class Game:
 		self.right_click = False
 		self.setup_waves()
 		self.new()
+		self.print = True
 
 	# SETS THE FOLDER VARIABLES and BUILDS MAP FROM THE TMX FILE ETC
 	def load_data(self):
@@ -250,7 +251,7 @@ class Game:
 		self.pre_wave_setup = True 	# Variable used to not add to the wave number during the first pregame timer
 		self.next_wave_timer = WAVETIMER
 
-		self.waves = [[[0, 10], [1, 0], [2, 0]], [[0, 10], [1, 10], [2, 0]], [[0, 10], [1, 20], [2, 5]], [[0, 10], [1, 25], [2, 20]]]
+		self.waves = [[[0, 10], [1, 15], [2, 0]], [[0, 10], [1, 10], [2, 0]], [[0, 10], [1, 20], [2, 5]], [[0, 10], [1, 25], [2, 20]]]
 
 		self.wave_number = 0
 
@@ -532,6 +533,7 @@ class Game:
 					if event.key == pg.K_i:  # and self.delay_counter == 0:
 						# self.delay_counter = 1
 						self.draw_overlay = not self.draw_overlay
+						self.print = True
 
 					if event.key == pg.K_s:
 						if not self.wave_active:

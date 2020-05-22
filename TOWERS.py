@@ -1,5 +1,6 @@
 from MENUS import *
 from OBJECTS import *
+import itertools
 
 
 # Indidual tower radius, damage, soeed, cooldown, splash radius all passed up from child class at the bottom of this page
@@ -15,7 +16,9 @@ class Tower(pg.sprite.Sprite):
 		self.rect = pg.Rect(0, 0, TILESIZE*TOWER_MULTIPLIER, TILESIZE) #for collisions
 		self.width, self.height = self.image.get_size()
 
-		self.fire_mode = "Oldest"
+		fire_modes = ["HQ", "High HP", "Low HP", "Fast", "Slow"]
+		self.fire_modes = itertools.cycle(fire_modes)
+		self.fire_mode = next(self.fire_modes)
 		self.target = False
 		self.attack_timer = 0
 		self.cooldown_timer = 0
@@ -26,6 +29,7 @@ class Tower(pg.sprite.Sprite):
 		if self.platform:
 			self.update_attack_images()
 		self.setup_animation_values()
+		
 
 
 	# Based on the specific child class of tower, prep the image of its radius
@@ -159,6 +163,9 @@ class Tower(pg.sprite.Sprite):
 						else:
 							pass
 							#todo, blit greyed out image on upgrade
+				elif button.action == "choose":
+					self.fire_mode = next(self.fire_modes)
+					self.menu.update_button_values()
 				elif button.action == "sell":
 					#print("money was", self.game.money)
 					self.game.money += button.button_value
@@ -246,13 +253,25 @@ class Tower(pg.sprite.Sprite):
 	# This check if a mob is within its radius (TODO: Call this within game once and pass a filtered list to each tower to save processing time)
 	def check_targets(self):
 		self.targets = []
+		f_m = self.fire_mode
 
 		for mob in self.game.mobs:
 			if pg.sprite.collide_circle(self, mob) and mob.alive:
 				self.targets.append(mob)
 
 		if len(self.targets) != 0:
-			#self.targets.sort(key=lambda x: x.turn_count)
+
+			if f_m == "HQ":
+				self.targets.sort(key=lambda x: (-x.turn_count, x.dist_from_target))
+			elif f_m == "Low HP":
+				self.targets.sort(key=lambda x: x.health)
+			elif f_m == "High HP":
+				self.targets.sort(key=lambda x: -x.health)
+			elif f_m == "Fast":
+				self.targets.sort(key=lambda x: -x.speed)
+			elif f_m == "Slow":
+				self.targets.sort(key=lambda x: x.speed)
+
 			self.target = self.targets[0]
 		else:
 			self.target = False

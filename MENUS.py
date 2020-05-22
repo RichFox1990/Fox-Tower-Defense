@@ -153,7 +153,7 @@ class Construction_menu:
 		for key in self.buttons.keys():  # check through buttons
 			button = self.buttons[key]
 			if button.rect.collidepoint(mpos):
-				print("collided", key)
+				#print("collided", key)
 				self.game.new_tower(key)
 
 	def update_button_values(self):
