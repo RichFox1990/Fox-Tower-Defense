@@ -1,6 +1,9 @@
 # Fox-Tower-Defense
 
-A tower defense game written in python and pygame
+A tower defense game written in python and pygame.
+My first bespoke project in coding. Feel free to drop ideas or improvements to help further development.
+Let me know what you think.
+
 
 ### CURRENT FEATURES:
 
