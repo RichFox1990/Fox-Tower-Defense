@@ -166,10 +166,12 @@ class Tower(pg.sprite.Sprite):
 				elif button.action == "choose":
 					self.fire_mode = next(self.fire_modes)
 					self.menu.update_button_values()
+					print("choose")
 				elif button.action == "sell":
-					#print("money was", self.game.money)
-					self.game.money += button.button_value
-					#print("money now is", self.game.money)
+					for i in range(button.button_value):
+						Coins(self.game, self, 25)
+					#self.game.money += button.button_value
+
 					self.game.selected_tower = False
 					pg.sprite.Sprite.kill(self)
 					del self

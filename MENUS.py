@@ -92,8 +92,8 @@ class Tower_menu:
 					button.button_value = self.tower.cost[self.tower.level]
 				elif button.action == "gem":
 					button.button_value = self.tower.level
-				elif button.action == "choose":
-					button.button_value = self.tower.fire_mode
+			if button.action == "choose":
+				button.button_value = self.tower.fire_mode
 			if button.action == "sell":
 				button.button_value = int(((self.tower.cost[0]) * self.tower.level) * .9)
 			button.render_text()

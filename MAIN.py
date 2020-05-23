@@ -227,8 +227,10 @@ class Game:
 		self.skip_font = pg.font.Font(None, 35, bold=True)
 		self.skip_text = outline_text(self.skip_font, "Press 'S' to commense to the next wave early", colours["white"], colours["black"])
 		self.skip_text_rect = self.skip_text.get_rect(center = self.bottom_bar_rect.midtop + vec(0, -25))
-		self.win_text = outline_text(self.skip_font, "LEVEL COMPLETE", colours["white"], colours["black"])
+		self.win_text = outline_text(self.lifes_font, "-GAME COMPLETE- WIP" , colours["white"], colours["black"])
 		self.win_text_rect = self.win_text.get_rect(center=self.screen_rect.center)
+		self.info_text = outline_text(self.skip_font, "Press 'Esc' to quit -- Go into 'SETTINGS.py' to add/ edit waves --", colours["white"], colours["black"])
+		self.info_text_rect = self.info_text.get_rect(center=self.screen_rect.center + vec(0, 50))
 
 		self.construct_rect = self.images["build_hammer"].get_rect(midbottom=self.bottom_bar_rect.midbottom)
 
@@ -304,15 +306,16 @@ class Game:
 			self.wave_number += 1
 		if self.wave_number > len(self.waves):
 			print("level complete!")
-			self.wave_number = 0
+			self.wave_number = 1
 			self.level_complete = True
 		else:
 			print("wave ", self.wave_number+1)
 		self.pre_wave_setup = False
-		self.wave_complete = False
-		self.wave = self.waves[self.wave_number]
-		print(f"changed wave to {self.wave}")
-		self.wave_active = True
+		if not self.level_complete:
+			self.wave_complete = False
+			self.wave = self.waves[self.wave_number]
+			print(f"changed wave to {self.wave}")
+			self.wave_active = True
 
 
 	def wave_countdown(self, dt):
@@ -494,8 +497,9 @@ class Game:
 
 		if not self.wave_active and not self.level_complete:
 			screen.blit(self.skip_text, self.skip_text_rect)
-		elif self.level_complete:
+		elif self.level_complete and self.wave_complete:
 			screen.blit(self.win_text, self.win_text_rect)
+			screen.blit(self.info_text, self.info_text_rect)
 
 		self.draw_HUD(screen)
 

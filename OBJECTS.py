@@ -210,18 +210,19 @@ class Projectile(pg.sprite.Sprite):
 
 # Coin class, drops upon mob death
 class Coins(pg.sprite.Sprite):
-	def __init__(self, game, mob):
+	def __init__(self, game, entity, spread):
 
 		self.game = game
 		self.groups = self.game.coins, self.game.all_sprites
 		pg.sprite.Sprite.__init__(self, self.groups)
 
-		self.mob = mob
+		self.spread = spread # Random spread value in pixels the coin can spawn from the entity's center point
+		self.entity = entity
 		self.images = self.game.images["coin"] # list of images used to animate the coin
 		self.image_number = 0
 		self.image = self.images[self.image_number]
 
-		self.rect = self.image.get_rect(center = self.mob.rect.center)
+		self.rect = self.image.get_rect(center = self.entity.rect.center)
 		self.width, self.height = self.image.get_size()
 		self.prep_shadow()
 		self.randomize_pos()
@@ -277,9 +278,9 @@ class Coins(pg.sprite.Sprite):
 		self.shadow_surface.set_alpha(50)
 
 
-	# Method to slightly scatter the coin start position from the mobs center
+	# Method to slightly scatter the coin start position from the entitys center
 	def randomize_pos(self):
-		randomx, randomy = rand.randrange(-10, 10), rand.randrange(-10, 10)
+		randomx, randomy = rand.randrange(-self.spread, self.spread), rand.randrange(-self.spread, self.spread)
 		self.rect.center += vec(randomx, randomy)
 		self.original_center = self.rect.center
 		self.shadow_rect.midtop = self.rect.midbottom# + vec(0, -5)

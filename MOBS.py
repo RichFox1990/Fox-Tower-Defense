@@ -240,7 +240,7 @@ class Mob(pg.sprite.Sprite):
 
 		if self.death_delay == 15:
 			for i in range(self.kill_value):
-				Coins(self.game, self)
+				Coins(self.game, self, 10)
 			self.particles = []
 			pg.sprite.Sprite.kill(self)
 			del self
