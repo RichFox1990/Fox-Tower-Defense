@@ -34,7 +34,7 @@ class Game:
 		self.selected_tower = False
 		self.mpos = pg.mouse.get_pos()
 		self.draw_grid = []
-		self.money = 250
+		self.money = STARTING_MONEY
 		self.lifes = 10
 		self.right_click = False
 		self.setup_waves()

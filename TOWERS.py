@@ -330,7 +330,7 @@ class Stone(Tower):
 		self.game = game
 		self.pos = pos
 		self.level = 1
-		self.cost = [30, 50, 75]
+		self.cost = [40, 50, 75]
 		self.firing_type = "splash"
 		self.platform = True
 		self.update_stats()
@@ -352,7 +352,7 @@ class Fire(Tower):
 		self.game = game
 		self.pos = pos
 		self.level = 1
-		self.cost = [30, 50, 75]
+		self.cost = [35, 60, 75]
 		self.firing_type = "splash"
 		self.platform = True
 		self.update_stats()
@@ -374,7 +374,7 @@ class Sand(Tower):
 		self.game = game
 		self.pos = pos
 		self.level = 1
-		self.cost = [30, 50, 75]
+		self.cost = [30, 55, 75]
 		self.firing_type = "splash"
 		self.platform = True
 		self.update_stats()
@@ -395,7 +395,7 @@ class Archer(Tower):
 		self.game = game
 		self.pos = pos
 		self.level = 1
-		self.cost = [30, 50, 75]
+		self.cost = [35, 60, 80]
 		self.firing_type = "direct"
 		self.platform = False
 		self.update_stats()
