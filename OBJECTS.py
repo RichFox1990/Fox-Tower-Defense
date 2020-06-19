@@ -162,7 +162,7 @@ class Projectile(pg.sprite.Sprite):
 
 
 	def particles(self, amount, offset=0):
-		if self.tower.name == "fire":
+		if self.tower.name == "Fire":
 			col_list = [colours["red"], colours["orange"], colours["yellow"]]
 			#x, y = self.pos
 			for iteration in range(amount):

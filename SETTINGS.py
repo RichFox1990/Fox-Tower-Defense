@@ -86,6 +86,8 @@ TOWER_SPACE = (TILESIZE*TOWER_MULTIPLIER - TOWERSIZE[0])
 PROJECTILE_SPEED = FPS/2
 PARTICLE_ANIMATION_SPEED = 0.05 # in seconds for projectile animation upon hit
 
+TOWER_COSTS = {"Stone": [40, 50, 75], "Fire": [35, 60, 75], "Sand": [30, 55, 75], "Archer": [35, 60, 80]}
+
 COINSIZE_MENU = (40, 40)
 COINSIZE = 25
 

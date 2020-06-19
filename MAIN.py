@@ -76,7 +76,7 @@ class Game:
 		# Loads image of a 32x32 gridline for use when placing towers
 		self.prep_grid()
 
-		self.construction_menu = Construction_menu(self)  # Build the construction meny for choosing a tower
+		self.construction_menu = Construction_menu(self)  # Build the construction menu for choosing a tower
 
 	# CREATES THE REFERENCES NEEDED FOR THE LEVEL. COLLECTS INFO FROM THE OBJECT LAYER IN THE TMX LEVEL FILE
 	def create_map(self):
@@ -133,7 +133,7 @@ class Game:
 
 		# Tower images
 		self.images["towers"] = {}
-		self.tower_names = ["stone", "fire", "archer", "sand"]
+		self.tower_names = ["Stone", "Fire", "Archer", "Sand"]
 		parts = ["tower", "particles", "animation"]
 		# len(fnmatch.filter(os.listdir(dirpath), '*.txt'))
 
@@ -328,7 +328,7 @@ class Game:
 	# Method to choose a tower temporary (TODO: intregrate choice to a menu and change/remove this method to suit this)
 	def new_tower(self, tower_name):
 		# if cost <= self.player_money:
-		tower_spawn = {"stone": Stone, "fire": Fire, "archer": Archer, "sand": Sand}  # , Sand]
+		tower_spawn = {"Stone": Stone, "Fire": Fire, "Archer": Archer, "Sand": Sand}
 		self.click = False
 		if self.building_tower == False:
 			self.building_tower = tower_spawn[tower_name](self, self.mpos)

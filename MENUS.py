@@ -135,16 +135,12 @@ class Construction_menu:
 			image = pg.transform.scale(image, (int(orig_size[0] / scale), int(orig_size[1] / scale)))
 			self.button_images[tower] = image
 
-	# ["stone", "fire", "archer"]
 	def create_buttons(self):
 		location = self.start
 		self.buttons = {}
 		for number, key in enumerate(self.button_images.keys()):
-			new_button = Button(self, self.button_images[key],
-								(self.rect.midleft + vec((location[0] + self.button_height / 2), location[1])), (
-											self.rect.midleft + vec((location[0] + self.button_height / 2),
-																	location[1] - self.button_height / 2)),
-								self.tower_names[number], 18)
+			new_button = Button(self, self.button_images[key], (self.rect.midleft + vec((location[0] + self.button_height / 2), location[1])),
+								(self.rect.midleft + vec((location[0] + self.button_height / 2), location[1] - self.button_height / 2)), self.tower_names[number], 18)
 			# print(self.rect.center, "+", vec(self.button_xy[order[number]]))
 			self.buttons[key] = new_button
 			location += vec(self.spacing + self.button_height, 0)
@@ -157,10 +153,9 @@ class Construction_menu:
 				self.game.new_tower(key)
 
 	def update_button_values(self):
-		self.construction_price = {"stone": 30, "fire": 30, "archer": 30, "sand": 35}
 		for key in self.buttons.keys():
 			# print(button.action)
-			self.buttons[key].button_value = self.construction_price[self.buttons[key].action]
+			self.buttons[key].button_value = TOWER_COSTS[self.buttons[key].action][0]
 
 	# self.buttons[key].render_text()
 
@@ -170,7 +165,7 @@ class Construction_menu:
 
 		for tower in self.game.tower_names:
 			button = self.buttons[tower]
-			cost = self.font.render(str(self.construction_price[tower]), True, colours["white"])
+			cost = self.font.render(str(TOWER_COSTS[tower][0]), True, colours["white"])
 			cost_rect = cost.get_rect(midtop=button.rect.midbottom + vec(0, 1))
 			name = self.font.render((tower), True, colours["white"])
 			name_rect = name.get_rect(midbottom=button.rect.midtop + vec(0, -1))

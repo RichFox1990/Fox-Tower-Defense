@@ -3,7 +3,7 @@ from OBJECTS import *
 import itertools
 
 
-# Indidual tower radius, damage, soeed, cooldown, splash radius all passed up from child class at the bottom of this page
+# Individual tower radius, damage, speed, cooldown, splash radius all passed up from child class at the bottom of this page
 class Tower(pg.sprite.Sprite):
 	def __init__(self):
 		self.groups = self.game.towers, self.game.all_sprites
@@ -55,15 +55,15 @@ class Tower(pg.sprite.Sprite):
 				self.front = self.animate_images[2]
 				self.back = self.animate_images[3]
 
-			if self.name == "stone":
+			if self.name == "Stone":
 				self.f_offset = vec(-2, 3)
 				self.b_offset = vec(0, 2)
 
-			elif self.name == "sand":
+			elif self.name == "Sand":
 				self.f_offset = vec(-4, -2)
 				self.b_offset = vec(0, 4)
 
-			elif self.name == "fire":
+			elif self.name == "Fire":
 				self.f_offset = vec(-2, -10)
 				self.b_offset = vec(0, 8)
 				# correction to center properly
@@ -326,7 +326,7 @@ class Tower(pg.sprite.Sprite):
 # Towers
 class Stone(Tower):
 	def __init__(self, game, pos):
-		self.name = "stone"
+		self.name = "Stone"
 		self.game = game
 		self.pos = pos
 		self.level = 1
@@ -348,7 +348,7 @@ class Stone(Tower):
 
 class Fire(Tower):
 	def __init__(self, game, pos):
-		self.name = "fire"
+		self.name = "Fire"
 		self.game = game
 		self.pos = pos
 		self.level = 1
@@ -370,7 +370,7 @@ class Fire(Tower):
 
 class Sand(Tower):
 	def __init__(self, game, pos):
-		self.name = "sand"
+		self.name = "Sand"
 		self.game = game
 		self.pos = pos
 		self.level = 1
@@ -391,7 +391,7 @@ class Sand(Tower):
 
 class Archer(Tower):
 	def __init__(self, game, pos):
-		self.name = "archer"
+		self.name = "Archer"
 		self.game = game
 		self.pos = pos
 		self.level = 1
