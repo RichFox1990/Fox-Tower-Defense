@@ -1,5 +1,6 @@
-from MENUS import *
-from OBJECTS import *
+from GameMenus import *
+from ProjectileClass import *
+from CoinClass import *
 import itertools
 
 
@@ -152,9 +153,8 @@ class Tower(pg.sprite.Sprite):
 	#When the menu is displayed, check if a button has been clicked
 	def handle_menu_click(self, mpos):
 		for button in self.menu.buttons: 		# check through buttons
-			if button.rect.collidepoint(mpos):# - vec(self.menu.rect.topleft)):# if the mouse was clicked on one of them. Do the related action/checks
-				#print(f"boop {self..menu.buttons.index(button) + 1}")
-				#print(button.action)
+			# - vec(self.menu.rect.topleft)):# if the mouse was clicked on one of them. Do the related action/checks
+			if button.rect.collidepoint(mpos):
 				if button.action == "upgrade":
 					if self.handle_upgrade():
 						if self.level - 2 < len(self.cost):
@@ -162,7 +162,7 @@ class Tower(pg.sprite.Sprite):
 							self.menu.update_button_values()
 						else:
 							pass
-							#todo, blit greyed out image on upgrade
+							# todo, blit greyed out image on upgrade
 				elif button.action == "choose":
 					self.fire_mode = next(self.fire_modes)
 					self.menu.update_button_values()
@@ -170,12 +170,10 @@ class Tower(pg.sprite.Sprite):
 				elif button.action == "sell":
 					for i in range(button.button_value):
 						Coins(self.game, self, 25)
-					#self.game.money += button.button_value
 
 					self.game.selected_tower = False
 					pg.sprite.Sprite.kill(self)
 					del self
-
 
 	# Checks if the player can upgrade the tower
 	def handle_upgrade(self):
@@ -198,7 +196,6 @@ class Tower(pg.sprite.Sprite):
 			print("MAX LEVEL REACHED")
 			return False
 
-
 	# This is called when the tower is selected to be purchased, handles the image following the mouse (on a grid format) and whether it can be purchased whe nthe user clicks
 	# if it can it sets the relevant values and calls the relevant functions needed to intiate the tower
 	def handle_purchase(self):
@@ -218,7 +215,6 @@ class Tower(pg.sprite.Sprite):
 				collide_list = []
 				for rect in self.game.path_rects:
 					if rect.colliderect(self.tower_pos):
-						#do things
 						print("cant place on path")
 						collide_list.append("True")
 
@@ -232,7 +228,6 @@ class Tower(pg.sprite.Sprite):
 					for tower in self.game.towers:
 						# Check new tower doesnt collide (excluding colliding with itself)
 						if pg.sprite.collide_rect(tower, self) and tower != self:
-							#do things
 							print("cant place here, tower already here")
 							collide_list.append("True")
 
@@ -245,13 +240,11 @@ class Tower(pg.sprite.Sprite):
 						self.placed = True
 						self.game.building_tower = False
 						self.image_rect.midbottom = self.rect.midbottom #pg.Rect(tower_sq_pos[0], tower_sq_pos[1], TILESIZE, TILESIZE)
-						#print(f"my rect is {self.rect}")
-						self.menu = Tower_menu(self.game, self)
+						self.menu = TowerMenu(self.game, self)
 						self.level_up_values()
 					else:
 						print(f"you cannot afford this tower. You need {cost} coins")
 
-	
 	# This check if a mob is within its radius (TODO: Call this within game once and pass a filtered list to each tower to save processing time)
 	def check_targets(self):
 		self.targets = []
@@ -278,7 +271,6 @@ class Tower(pg.sprite.Sprite):
 		else:
 			self.target = False
 
-
 	# Overlays for "dev view"
 	def draw_overlays(self, screen):
 		pg.draw.circle(screen, colours["gray"], self.rect.center, self.radius, 3)
@@ -287,7 +279,6 @@ class Tower(pg.sprite.Sprite):
 				pg.draw.line(screen, colours["lightblue"], self.rect.center, target.rect.center, 4)
 			pg.draw.line(screen, colours["red"], self.rect.center, self.targets[0].rect.center, 4)
 			pg.draw.rect(screen, colours["white"], self.targets[0], 5)
-
 		
 	# Method to organise the draw order of the tower (main image, front of platform, back of platform, projectile etc)
 	def draw_tower(self, screen):
@@ -300,7 +291,6 @@ class Tower(pg.sprite.Sprite):
 		else:
 			screen.blit(self.image, self.image_rect)
 
-
 	# Draw loop
 	def draw(self, screen):
 
@@ -309,17 +299,10 @@ class Tower(pg.sprite.Sprite):
 
 		if self.selected:
 			screen.blit(self.rad_surface, self.rad_rect)
-			#pg.draw.rect(screen, colours["green"], self.image_rect, 5)
-			#self.menu.draw(screen) # moved to main game loop to ensure the menu is always drawn last
 
 		else:
 			if self.game.building_tower != False:
-				#pg.draw.rect(self.game.screen, colours["red"], self.tower_pos, 2)
-				#pg.draw.rect(self.game.screen, colours["red"], pg.rect.Rect(self.tower_sq_pos[0], self.tower_sq_pos[1], 5, 5))
-
-				# Tower is not placed so draw the tower slightly transparent and follow the mouse position (the self.rect is set to the mouse position in the update loop)
 				pg.draw.circle(screen, colours["gray"], self.rect.center, self.radius, 3)
-				#self.image.set_alpha(175)
 				self.draw_tower(screen)
 
 
@@ -339,10 +322,10 @@ class Stone(Tower):
 	def update_stats(self):
 		self.radius = int((TILESIZE//1.5 * (4 + int(self.level*1.5)))*TOWER_RADIUS_MULTIPLIER)
 		self.damage = 3 + (self.level * 2)
-		self.attack_speed = FPS*2 - ((self.level-1) * 4)
+		self.attack_speed = FPS*2.5 - ((self.level-1) * 4)
 		self.attack_cooldown = self.attack_speed*.9
-		self.attack_animation_time = 20#self.attack_speed - self.attack_cooldown
-		self.loop_height = 50 	#amount of pixels the projectile loops in the air when shot toward target
+		self.attack_animation_time = 20  # self.attack_speed - self.attack_cooldown
+		self.loop_height = 50  # amount of pixels the projectile loops in the air when shot toward target
 		self.splash = 45 + (self.level * 5)
 
 
@@ -360,11 +343,11 @@ class Fire(Tower):
 
 	def update_stats(self):
 		self.radius = int((TILESIZE//1.5 * (5 + int(self.level*1.5)))*TOWER_RADIUS_MULTIPLIER)
-		self.damage = 2 + (self.level * 2)
+		self.damage = 2.3 + (self.level * 2)
 		self.attack_speed = FPS*3 - ((self.level-1) * 5)
 		self.attack_cooldown = self.attack_speed*.9
-		self.attack_animation_time = 15#self.attack_speed - self.attack_cooldown
-		self.loop_height = 80 	#amount of pixels the projectile loops in the air when shot toward target
+		self.attack_animation_time = 15  # self.attack_speed - self.attack_cooldown
+		self.loop_height = 80  # amount of pixels the projectile loops in the air when shot toward target
 		self.splash = 55 + (self.level * 5)
 
 
@@ -386,7 +369,7 @@ class Sand(Tower):
 		self.attack_speed = FPS*3.5 - ((self.level-1) * 3)
 		self.attack_cooldown = self.attack_speed
 		self.attack_animation_time = 15
-		self.loop_height = 80 	#amount of pixels the projectile loops in the air when shot toward target
+		self.loop_height = 80  # amount of pixels the projectile loops in the air when shot toward target
 		self.splash = 55 + (self.level * 5)
 
 class Archer(Tower):
@@ -407,43 +390,5 @@ class Archer(Tower):
 		self.attack_speed = FPS*1 - ((self.level-1) * 3)
 		self.attack_cooldown = self.attack_speed
 		self.attack_animation_time = self.attack_speed*0.2
-		self.loop_height = 0 	#amount of pixels the projectile loops in the air when shot toward target
-		self.splash = 0#45 + (self.level * 5)
-
-
-# Old pygame surface towers
-class blue_t(Tower):
-	def __init__(self, game, pos):
-		self.game = game
-		self.name = "blue_t"
-		self.pos = pos
-		self.width, self.height = TOWERSIZE
-		self.colour = colours["blue"]
-		self.image = pg.Surface(TOWERSIZE)
-		self.image.fill(self.colour)
-		self.image_rect = self.image.get_rect()
-		self.rect = pg.Rect(0, 0, TILESIZE*TOWER_MULTIPLIER, TILESIZE)
-		self.level = 1
-		self.radius = int(TILESIZE//1.5 * (4 + int(self.level*1.5)))
-		self.damage = 2 + (self.level * 2)
-		self.attack_speed = FPS*0.66 - ((self.level-1) * 5)
-		self.cost = [50/2, 80//2, 130//2]
-		super().__init__()
-
-class white_t(Tower):
-	def __init__(self, game, pos):
-		self.game = game
-		self.name = white_t
-		self.pos = pos
-		self.width, self.height = TOWERSIZE
-		self.colour = colours["white"]
-		self.image = pg.Surface(TOWERSIZE)
-		self.image.fill(self.colour)
-		self.image_rect = self.image.get_rect()
-		self.rect = pg.Rect(0, 0, TILESIZE*TOWER_MULTIPLIER, TILESIZE)
-		self.level = 1
-		self.radius = int(TILESIZE//1.5 * (4 + int(self.level*1.5)))
-		self.damage = 4 + (self.level * 2)
-		self.attack_speed = FPS*0.83 - ((self.level-1) * 4)
-		self.cost = [60/2, 100/2, 150/2]
-		super().__init__()
+		self.loop_height = 0  # amount of pixels the projectile loops in the air when shot toward target
+		self.splash = 0

@@ -1,9 +1,9 @@
 import fnmatch
 import os
-from FUNCTIONS import *
-from MOBS import *
-from TILED import *
-from TOWERS import *
+from MobClasses import *
+from TiledTMX import *
+from TowerClasses import *
+from WaveGeneration import *
 
 
 class Game:
@@ -49,7 +49,7 @@ class Game:
 		self.mob_folder = os.path.join(self.image_folder, "enemies")
 		self.tower_folder = os.path.join(self.image_folder, "towers")
 
-		self.map = Tiled_map(os.path.join(self.map_folder, "level.tmx"))
+		self.map = TiledMap(os.path.join(self.map_folder, "level.tmx"))
 		self.map_img = self.map.make_map()
 		self.map_rect = self.map_img.get_rect()
 
@@ -60,7 +60,7 @@ class Game:
 		self.player = pg.sprite.Group()
 		self.coins = pg.sprite.Group()
 
-		self.spawn_mobs = {"Orc": Orc, "Scorpion": Scorpion, "Purple_Hippo": Purple_Hippo}
+		self.spawn_mobs = {"Orc": Orc, "Scorpion": Scorpion, "Purple_Hippo": PurpleHippo}
 
 	# RUNS ON __init__ , CALLS VARIOUS METHODS TO SET UP INITIAL DATA AS STATED BELOW
 	def new(self):
@@ -76,7 +76,7 @@ class Game:
 		# Loads image of a 32x32 gridline for use when placing towers
 		self.prep_grid()
 
-		self.construction_menu = Construction_menu(self)  # Build the construction menu for choosing a tower
+		self.construction_menu = ConstructionMenu(self)  # Build the construction menu for choosing a tower
 
 	# CREATES THE REFERENCES NEEDED FOR THE LEVEL. COLLECTS INFO FROM THE OBJECT LAYER IN THE TMX LEVEL FILE
 	def create_map(self):
@@ -258,7 +258,9 @@ class Game:
 		self.pre_wave_setup = True 	# Variable used to not add to the wave number during the first pregame timer
 		self.next_wave_timer = WAVETIMER
 
-		self.waves = WAVES
+		self.waves = create_all_waves()
+		print("length of wave are", len(self.waves))
+		print(self.waves)
 
 		self.wave_number = 1
 
@@ -300,7 +302,6 @@ class Game:
 				self.wave_active = False
 				self.wave_complete = True
 
-
 	def next_wave(self):
 		if not self.pre_wave_setup:
 			self.wave_number += 1
@@ -317,13 +318,11 @@ class Game:
 			print(f"changed wave to {self.wave}")
 			self.wave_active = True
 
-
 	def wave_countdown(self, dt):
 		self.next_wave_timer -= dt
 		if self.next_wave_timer <= 0:
 			self.next_wave()
 			self.next_wave_timer = WAVETIMER
-
 
 	# Method to choose a tower temporary (TODO: intregrate choice to a menu and change/remove this method to suit this)
 	def new_tower(self, tower_name):
@@ -381,7 +380,6 @@ class Game:
 
 	# Method to handle a click on towers (selecting, deselecting, swapping when another already highlighted etc)
 	def handle_click(self, mpos):
-
 		if self.show_construct_menu:
 			if self.construction_menu.rect.collidepoint(mpos):
 				self.construction_menu.handle_click(mpos)

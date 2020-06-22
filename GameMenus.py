@@ -1,6 +1,6 @@
-from SETTINGS import *
-from FUNCTIONS import *
+from TextFunctions import *
 import sys
+
 
 def main_menu(img):
 	start_game = False
@@ -38,8 +38,7 @@ def main_menu(img):
 					screen = pg.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
 					return True
 
-
-		#screen.fill(colours["green"])
+		# screen.fill(colours["green"])
 		screen.blit(img, screen_rect)
 		screen.blit(fade, screen_rect)
 		screen.blit(game_name, g_rect)
@@ -50,9 +49,9 @@ def main_menu(img):
 		pg.display.update()
 
 
-class Tower_menu:
-	def __init__(self, game,
-				 tower):  # img = self.game.build_menu_img, button_xy = self.game.build_button_xy, text_xy = self.game.build_text_xy):
+class TowerMenu:
+	def __init__(self, game, tower):  # img = self.game.build_menu_img, button_xy = self.game.build_button_xy,
+		# text_xy = self.game.build_text_xy):
 		self.game = game
 		self.tower = tower
 		self.image = self.game.images["menu"]["tower_build_menu"]  # .set_colorkey(colours["black"])
@@ -106,7 +105,7 @@ class Tower_menu:
 	# pg.draw.rect(screen, colours["red"], button.rect, 1)
 
 
-class Construction_menu:
+class ConstructionMenu:
 	def __init__(self,
 				 game):  # img = self.game.build_menu_img, button_xy = self.game.build_button_xy, text_xy = self.game.build_text_xy):
 		self.game = game
