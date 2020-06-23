@@ -25,6 +25,12 @@ class Tower(pg.sprite.Sprite):
 		self.cooldown_timer = 0
 		self.placed = False
 		self.selected = False
+
+		self.highlighted = False
+		self.highlight = pg.Surface((self.image_rect.w*.9, self.image_rect.h))
+		self.highlight.fill((255, 255, 0))
+		self.highlight.set_alpha(45)
+		self.h_rect = self.highlight.get_rect(center= self.rect.center)
 		self.projectile = False
 		self.menu = "" # This is built once tower is placed
 		if self.platform:
@@ -130,6 +136,13 @@ class Tower(pg.sprite.Sprite):
 
 	# Main update loop (TODO: tidy up and move bits to other functions)
 	def update(self, dt):
+		if self.rect.collidepoint(self.game.mpos) and self.placed:
+			self.highlighted = True
+		elif self.placed and not self.selected:
+			self.highlighted = False
+
+
+		#	self.image = self.tower_images[self.level-1]
 		if self.placed:
 			self.handle_attack_timers(dt) # handles the shooting platform animation timer and cooldown (this function also attacks the relevant mob when timer at the correct point)
 			if self.platform:
@@ -152,13 +165,11 @@ class Tower(pg.sprite.Sprite):
 
 	#When the menu is displayed, check if a button has been clicked
 	def handle_menu_click(self, mpos):
-		for button in self.menu.buttons: 		# check through buttons
-			# - vec(self.menu.rect.topleft)):# if the mouse was clicked on one of them. Do the related action/checks
+		for button in self.menu.buttons:
 			if button.rect.collidepoint(mpos):
 				if button.action == "upgrade":
 					if self.handle_upgrade():
 						if self.level - 2 < len(self.cost):
-							#pass
 							self.menu.update_button_values()
 						else:
 							pass
@@ -166,7 +177,6 @@ class Tower(pg.sprite.Sprite):
 				elif button.action == "choose":
 					self.fire_mode = next(self.fire_modes)
 					self.menu.update_button_values()
-					print("choose")
 				elif button.action == "sell":
 					for i in range(button.button_value):
 						Coins(self.game, self, 25)
@@ -206,6 +216,7 @@ class Tower(pg.sprite.Sprite):
 
 			self.rect = self.tower_pos
 			self.image_rect.midbottom = self.rect.midbottom
+			self.h_rect = self.highlight.get_rect(center=self.image_rect.center)
 			if self.platform:
 				self.f_rect.midtop = self.image_rect.center + self.f_offset # front section rect
 				self.b_rect.midbottom = self.f_rect.midtop + self.b_offset
@@ -290,6 +301,8 @@ class Tower(pg.sprite.Sprite):
 			screen.blit(self.front, self.f_rect)
 		else:
 			screen.blit(self.image, self.image_rect)
+		if self.highlighted:
+			screen.blit(self.highlight, self.h_rect)
 
 	# Draw loop
 	def draw(self, screen):

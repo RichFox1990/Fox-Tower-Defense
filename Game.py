@@ -205,7 +205,7 @@ class Game:
 			image = pg.transform.scale(image, (int(orig[0] * img[1]), int(orig[1] * img[1])))
 			self.images["menu"][img[0]] = image
 
-
+		# SETUP RECTS
 		self.bottom_bar_rect = self.images["menu"]["bottom_bar"].get_rect(bottomleft=self.screen_rect.bottomleft)
 
 		# Setup game Clock
@@ -216,8 +216,7 @@ class Game:
 		# Load and setup Coin display
 		self.coin_font = pg.font.Font(None, 50, bold=True)
 		self.coin_text = outline_text(self.coin_font, str(int(self.money)), colours["white"], colours["black"])
-		self.coin_rect = self.coin_text.get_rect(
-			center=(self.bottom_bar_rect.width * .75, self.bottom_bar_rect.center[1]))
+		self.coin_rect = self.coin_text.get_rect(center=(self.bottom_bar_rect.width * .75, self.bottom_bar_rect.center[1]))
 
 		# Load and setup life display
 		self.lifes_font = pg.font.Font(None, 50, bold=True)
@@ -225,7 +224,7 @@ class Game:
 		self.lifes_rect = self.coin_text.get_rect(midright=self.bottom_bar_rect.midright)  # + vec(-5, 0))
 
 		self.skip_font = pg.font.Font(None, 35, bold=True)
-		self.skip_text = outline_text(self.skip_font, "Press 'S' to commense to the next wave early", colours["white"], colours["black"])
+		self.skip_text = outline_text(self.skip_font, "Press 'S' to commence to the next wave early", colours["white"], colours["black"])
 		self.skip_text_rect = self.skip_text.get_rect(center = self.bottom_bar_rect.midtop + vec(0, -25))
 		self.win_text = outline_text(self.lifes_font, "-GAME COMPLETE- WIP" , colours["white"], colours["black"])
 		self.win_text_rect = self.win_text.get_rect(center=self.screen_rect.center)
@@ -564,6 +563,12 @@ class Game:
 
 					if event.key == pg.K_t:
 						pass
+
+				if event.type == pg.MOUSEMOTION:
+					if self.construct_rect.collidepoint(self.mpos):
+						self.construct_rect.midbottom = self.bottom_bar_rect.midbottom + vec(0, -10)
+					else:
+						self.construct_rect.midbottom = self.bottom_bar_rect.midbottom
 
 				if event.type == pg.MOUSEBUTTONDOWN and self.delay_counter == 0:
 					if event.button == 1:

@@ -14,15 +14,17 @@
 - Menus for buying towers and upgrading towers.
 - Pause, resume from the main menu.
 
-#### Update 22/06/20
-- Big clear out of obsolete code and functions
-- Renamed and restructured code (1st pass)
+#### Update 23/06/20
 - Added wave generation into seperate file/function
+- Change size/Colors and image of main main.
+- Added visual feedback when hovering over construction hammer and towers.
 - Buffed fire tower damage by 10%.
 - Reduced fire speed of stone tower by 25%.
+- Big clear out of obsolete code and functions
+- Renamed and restructured code (1st pass)
 
 
 ### Ongoing project
 
 Credit:
-SN33DS - for the wave setup in SETTINGS.py
+SN33DS - for the endless wave setup

@@ -10,7 +10,7 @@ class Coins(pg.sprite.Sprite):
 		self.groups = self.game.coins, self.game.all_sprites
 		pg.sprite.Sprite.__init__(self, self.groups)
 
-		self.spread = spread # Random spread value in pixels the coin can spawn from the entity's center point
+		self.spread = spread  # Random spread value in pixels the coin can spawn from the entity's center point
 		self.entity = entity
 		self.images = self.game.images["coin"] # list of images used to animate the coin
 		self.image_number = 0
@@ -91,9 +91,7 @@ class Coins(pg.sprite.Sprite):
 		if self.rect.collidepoint(mpos):
 			self.game.money += 1
 			self.collected = True
-		else:
-			#animate
-			pass
+
 		self.animate(dt)
 
 		self.follow_mouse(mpos, dt)

@@ -4,17 +4,18 @@ import sys
 
 def main_menu(img):
 	start_game = False
-	screen_width = SCREENWIDTH//2
+	screen_width = SCREENWIDTH
 	screen_height = SCREENHEIGHT
 	screen = pg.display.set_mode((screen_width, screen_height))
 	screen_rect = screen.get_rect()
 
-	font = pg.font.Font(None, 35, bold=True)
-	game_name = outline_text(font, "FOXY TOWERS", colours["white"], colours["black"])
+	name_font = pg.font.Font(None, 125, bold=True)
+	font = pg.font.Font(None, 45, bold=True)
+	game_name = outline_text(name_font, "FOXY TOWERS", colours["white"], colours["black"])
 	g_rect = game_name.get_rect(center = screen_rect.midtop + vec(0, screen_height//4))
-	instruction = outline_text(font, "Press any button to PLAY", colours["white"], colours["black"])
+	instruction = outline_text(font, "Press any button to PLAY", colours["green"], colours["black"])
 	i_rect = instruction.get_rect(center = screen_rect.center)
-	quit = outline_text(font, "Press 'Esc' to QUIT", colours["white"], colours["black"])
+	quit = outline_text(font, "Press 'Esc' to QUIT", colours["crimson"], colours["black"])
 	q_rect = quit.get_rect(center = screen_rect.midbottom + vec(0, -screen_height//4))
 
 	fade = pg.surface.Surface((screen_width, screen_height))
@@ -38,7 +39,6 @@ def main_menu(img):
 					screen = pg.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
 					return True
 
-		# screen.fill(colours["green"])
 		screen.blit(img, screen_rect)
 		screen.blit(fade, screen_rect)
 		screen.blit(game_name, g_rect)
@@ -79,7 +79,7 @@ class TowerMenu:
 		action = ["upgrade", "gem", "choose", "sell"]
 		self.buttons = []
 		for number, image in enumerate(self.button_images):
-			new_button = Button(self, image, (self.rect.center + vec(self.button_xy[order[number]])),
+			new_button = TowerMenuButton(self, image, (self.rect.center + vec(self.button_xy[order[number]])),
 								(self.rect.center + vec(self.text_xy[order[number]])), action[number], 12)
 			#print(self.rect.center, "+", vec(self.button_xy[order[number]]))
 			self.buttons.append(new_button)
@@ -106,8 +106,7 @@ class TowerMenu:
 
 
 class ConstructionMenu:
-	def __init__(self,
-				 game):  # img = self.game.build_menu_img, button_xy = self.game.build_button_xy, text_xy = self.game.build_text_xy):
+	def __init__(self, game):  # img = self.game.build_menu_img, button_xy = self.game.build_button_xy, text_xy = self.game.build_text_xy):
 		self.game = game
 
 		self.image = self.game.images["menu"]["tower_construct_menu"]
@@ -138,7 +137,7 @@ class ConstructionMenu:
 		location = self.start
 		self.buttons = {}
 		for number, key in enumerate(self.button_images.keys()):
-			new_button = Button(self, self.button_images[key], (self.rect.midleft + vec((location[0] + self.button_height / 2), location[1])),
+			new_button = TowerMenuButton(self, self.button_images[key], (self.rect.midleft + vec((location[0] + self.button_height / 2), location[1])),
 								(self.rect.midleft + vec((location[0] + self.button_height / 2), location[1] - self.button_height / 2)), self.tower_names[number], 18)
 			# print(self.rect.center, "+", vec(self.button_xy[order[number]]))
 			self.buttons[key] = new_button
@@ -181,17 +180,17 @@ class ConstructionMenu:
 		# pg.draw.rect(screen, colours["red"], self.rect, 1)
 		for key in self.buttons.keys():
 			self.buttons[key].draw(screen)
-			pg.draw.rect(screen, colours["gray"], self.buttons[key].rect, 2)
+		#	pg.draw.rect(screen, colours["gray"], self.buttons[key].rect, 2)
 		self.draw_cost_info(screen)
 
 
-class Button:
-	def __init__(self, menu, img, location, t_location, action, font_size, button_value=False):
+class TowerMenuButton:
+	def __init__(self, menu, img, location, text_location, action, font_size, button_value=False):
 		self.menu = menu
 		self.image = img
 		self.action = action
 		self.location = location
-		self.t_location = t_location
+		self.text_location = text_location
 		self.button_value = button_value
 		self.font_size = font_size
 
@@ -202,16 +201,11 @@ class Button:
 	def build_button(self):
 		self.rect = self.image.get_rect(center=self.location)
 
-	# def generate_text(self):
-	# 	self.text_font = pg.font.Font(None , 20, bold=True)
-	# 	self.text = outline_text(self.text_font, self.button_image, colours["white"], colours["black"])
-	# 	self.text_rect = self.text.get_rect(midtop = (self.rect.midtop + vec(0,2)))
-
 	def render_text(self):
 		self.value_font = pg.font.SysFont("Times New Roman", self.font_size, bold=True)
 		self.value = self.value_font.render(str(self.button_value), True, colours["white"])
 		# self.value = outline_text(self.value_font, str(self.button_value), colours["white"], colours["black"])
-		self.value_rect = self.value.get_rect(center=self.t_location)
+		self.value_rect = self.value.get_rect(center=self.text_location)
 
 	def draw(self, screen):
 		screen.blit(self.image, self.rect)
