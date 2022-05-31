@@ -1,7 +1,2 @@
-**/*__pycache__/
-.idea/
-
-# ignore .filters and .user
-
-*.pyc
+**/__pycache__
 *.gitattributes

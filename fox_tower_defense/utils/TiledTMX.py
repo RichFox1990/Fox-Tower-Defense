@@ -1,5 +1,5 @@
 import pytmx
-from SETTINGS import *
+import pygame as pg
 
 
 # HANDLES THE INTIAL SETUP AND STORAGE OF THE LEVEL TMX FILE FROM TILED

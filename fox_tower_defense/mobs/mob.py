@@ -1,6 +1,11 @@
 import itertools
-from ProjectileClass import *
-from CoinClass import *
+import time
+import random as rand
+import pygame as pg
+
+from utils.SETTINGS import MOB_START_POS, COLOURS, APPROACH_RADIUS
+from utils.helper_classes import vec
+from coins.coin import Coins
 
 
 class Mob(pg.sprite.Sprite):
@@ -79,10 +84,10 @@ class Mob(pg.sprite.Sprite):
 		else:
 			self.shadow_height = shad_height
 		self.shadow_surface = pg.Surface((self.width, self.shadow_height))
-		self.shadow_surface.fill(colours["magenta"])
+		self.shadow_surface.fill(COLOURS["magenta"])
 		self.shadow_rect = self.shadow_surface.get_rect(midbottom = self.rect.midbottom - vec(0, self.shadow_height))
-		pg.draw.ellipse(self.shadow_surface, colours["black"], (0,0, self.width, self.shadow_height))
-		self.shadow_surface.set_colorkey(colours["magenta"])
+		pg.draw.ellipse(self.shadow_surface, COLOURS["black"], (0,0, self.width, self.shadow_height))
+		self.shadow_surface.set_colorkey(COLOURS["magenta"])
 		self.shadow_surface.set_alpha(100)
 
 	# Pre create the flipped images we used whe nthe mobs are facing left
@@ -209,7 +214,7 @@ class Mob(pg.sprite.Sprite):
 
 		if self.death_delay == 1:
 			image = self.image.copy()
-			image.fill((colours["red"]), special_flags=pg.BLEND_RGB_MIN)
+			image.fill((COLOURS["red"]), special_flags=pg.BLEND_RGB_MIN)
 			self.image = image
 
 		self.death_delay += 1
@@ -222,7 +227,7 @@ class Mob(pg.sprite.Sprite):
 			del self
 
 	def death_particles(self):
-		col_list = [colours["red"]]
+		col_list = [COLOURS["red"]]
 		x, y = self.pos
 		self.particles.append(
 			[[x, y], [rand.randint(0, 20) / 10 - 1, rand.randint(0, 40) / 10 - 1], rand.randint(2, 4),
@@ -267,39 +272,3 @@ class Mob(pg.sprite.Sprite):
 		if not self.alive:
 			for particle in self.particles:
 				pg.draw.circle(screen, particle[3], [int(particle[0][0]), int(particle[0][1])], int(particle[2]))
-
-
-class Orc(Mob):
-	def __init__(self, game):
-		self.name = "Orc"
-		self.game = game
-		self.type = "ground"
-		self.speed = 40 * MOBSPEED_MULTIPLIER
-		self.colour = colours["green"]
-		self.health = 12 + (self.game.wave_number * 2)
-		self.kill_value = int((self.health/10 + 1) + 0.5) # Coins
-		super().__init__()
-
-
-class Scorpion(Mob):
-	def __init__(self, game):
-		self.name = "Scorpion"
-		self.game = game
-		self.type = "ground"
-		self.speed = 60 * MOBSPEED_MULTIPLIER
-		self.colour = colours["red"]
-		self.health = 7 + (self.game.wave_number * 2)
-		self.kill_value = int((self.health/10 + 1) + 0.5) # Coins
-		super().__init__()
-
-
-class PurpleHippo(Mob):
-	def __init__(self, game):
-		self.name = "Purple_Hippo"
-		self.game = game
-		self.type = "ground"
-		self.speed = 45 * MOBSPEED_MULTIPLIER
-		self.colour = colours["red"]
-		self.health = 16 + (self.game.wave_number * 2)
-		self.kill_value = int((self.health/10 + 1) + 0.5) # Coins
-		super().__init__()

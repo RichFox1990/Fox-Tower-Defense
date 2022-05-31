@@ -1,5 +1,9 @@
-from SETTINGS import *
+import pygame as pg
 import random as rand
+from utils.SETTINGS import TILE_SIZE
+
+from utils.SETTINGS import COLOURS, TILE_SIZE
+from utils.helper_classes import vec
 
 
 # Coin class, drops upon mob death
@@ -29,7 +33,7 @@ class Coins(pg.sprite.Sprite):
 		self.despawn_time = 10
 
 		self.follow_speed = 100
-		self.follow_radius = TILESIZE*2
+		self.follow_radius = TILE_SIZE*2
 
 		self.delay_loop = 0
 		self.despawning = False
@@ -63,10 +67,10 @@ class Coins(pg.sprite.Sprite):
 	def prep_shadow(self):
 		self.shadow_height = int(self.height/2.1)/1.5
 		self.shadow_surface = pg.Surface((self.width*.8, self.shadow_height))
-		self.shadow_surface.fill(colours["magenta"])
+		self.shadow_surface.fill(COLOURS["magenta"])
 		self.shadow_rect = self.shadow_surface.get_rect(midtop = self.rect.midbottom)
-		pg.draw.ellipse(self.shadow_surface, colours["black"], (0,0, self.width*.8, self.shadow_height))
-		self.shadow_surface.set_colorkey(colours["magenta"])
+		pg.draw.ellipse(self.shadow_surface, COLOURS["black"], (0,0, self.width*.8, self.shadow_height))
+		self.shadow_surface.set_colorkey(COLOURS["magenta"])
 		self.shadow_surface.set_alpha(50)
 
 	# Method to slightly scatter the coin start position from the entitys center

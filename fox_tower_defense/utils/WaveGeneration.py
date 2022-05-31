@@ -1,4 +1,4 @@
-from SETTINGS import *
+from utils.SETTINGS import *
 import random as rand
 
 

@@ -1,7 +1,11 @@
-from GameMenus import *
-from ProjectileClass import *
-from CoinClass import *
 import itertools
+import pygame as pg
+
+from utils.SETTINGS import COLOURS, FPS, TILE_SIZE, TOWER_MULTIPLIER, TOWER_RADIUS_MULTIPLIER
+from utils.helper_classes import vec
+from game_menus.tower_menu import TowerMenu
+from projectiles.projectile import Projectile 
+from coins.coin import Coins 
 
 
 # Individual tower radius, damage, speed, cooldown, splash radius all passed up from child class at the bottom of this page
@@ -14,7 +18,7 @@ class Tower(pg.sprite.Sprite):
 		self.animate_images = self.game.images["towers"][self.name]["animation"]
 		self.image = self.tower_images[self.level-1]
 		self.image_rect = self.image.get_rect()
-		self.rect = pg.Rect(0, 0, TILESIZE*TOWER_MULTIPLIER, TILESIZE) #for collisions
+		self.rect = pg.Rect(0, 0, TILE_SIZE*TOWER_MULTIPLIER, TILE_SIZE) #for collisions
 		self.width, self.height = self.image.get_size()
 
 		fire_modes = ["HQ", "High HP", "Low HP", "Fast", "Slow"]
@@ -42,11 +46,11 @@ class Tower(pg.sprite.Sprite):
 	# Based on the specific child class of tower, prep the image of its radius
 	def prep_radius(self):
 		self.rad_surface = pg.Surface((self.radius*2, self.radius*2))
-		self.rad_surface.fill(colours["magenta"])
+		self.rad_surface.fill(COLOURS["magenta"])
 		self.rad_rect = self.rad_surface.get_rect()
-		pg.draw.circle(self.rad_surface, colours["gray"], self.rad_rect.center, self.radius)
-		pg.draw.circle(self.rad_surface, colours["white"], self.rad_rect.center, self.radius, 1)
-		self.rad_surface.set_colorkey(colours["magenta"])
+		pg.draw.circle(self.rad_surface, COLOURS["gray"], self.rad_rect.center, self.radius)
+		pg.draw.circle(self.rad_surface, COLOURS["white"], self.rad_rect.center, self.radius, 1)
+		self.rad_surface.set_colorkey(COLOURS["magenta"])
 		self.rad_surface.set_alpha(50)
 		self.rad_rect.center = self.rect.center
 
@@ -211,8 +215,8 @@ class Tower(pg.sprite.Sprite):
 	def handle_purchase(self):
 		if self.game.building_tower != False:
 			# Grid position
-			self.tower_sq_pos = ((self.game.mpos[0]//TILESIZE) * TILESIZE, (self.game.mpos[1]//TILESIZE) * TILESIZE)
-			self.tower_pos = pg.rect.Rect(self.tower_sq_pos[0], self.tower_sq_pos[1], TILESIZE*TOWER_MULTIPLIER, TILESIZE)
+			self.tower_sq_pos = ((self.game.mpos[0]//TILE_SIZE) * TILE_SIZE, (self.game.mpos[1]//TILE_SIZE) * TILE_SIZE)
+			self.tower_pos = pg.rect.Rect(self.tower_sq_pos[0], self.tower_sq_pos[1], TILE_SIZE*TOWER_MULTIPLIER, TILE_SIZE)
 
 			self.rect = self.tower_pos
 			self.image_rect.midbottom = self.rect.midbottom
@@ -250,7 +254,7 @@ class Tower(pg.sprite.Sprite):
 						self.check_targets()
 						self.placed = True
 						self.game.building_tower = False
-						self.image_rect.midbottom = self.rect.midbottom #pg.Rect(tower_sq_pos[0], tower_sq_pos[1], TILESIZE, TILESIZE)
+						self.image_rect.midbottom = self.rect.midbottom #pg.Rect(tower_sq_pos[0], tower_sq_pos[1], TILE_SIZE, TILE_SIZE)
 						self.menu = TowerMenu(self.game, self)
 						self.level_up_values()
 					else:
@@ -284,12 +288,12 @@ class Tower(pg.sprite.Sprite):
 
 	# Overlays for "dev view"
 	def draw_overlays(self, screen):
-		pg.draw.circle(screen, colours["gray"], self.rect.center, self.radius, 3)
+		pg.draw.circle(screen, COLOURS["gray"], self.rect.center, self.radius, 3)
 		if len(self.targets) != 0:
 			for target in self.targets:
-				pg.draw.line(screen, colours["lightblue"], self.rect.center, target.rect.center, 4)
-			pg.draw.line(screen, colours["red"], self.rect.center, self.targets[0].rect.center, 4)
-			pg.draw.rect(screen, colours["white"], self.targets[0], 5)
+				pg.draw.line(screen, COLOURS["lightblue"], self.rect.center, target.rect.center, 4)
+			pg.draw.line(screen, COLOURS["red"], self.rect.center, self.targets[0].rect.center, 4)
+			pg.draw.rect(screen, COLOURS["white"], self.targets[0], 5)
 		
 	# Method to organise the draw order of the tower (main image, front of platform, back of platform, projectile etc)
 	def draw_tower(self, screen):
@@ -315,93 +319,5 @@ class Tower(pg.sprite.Sprite):
 
 		else:
 			if self.game.building_tower != False:
-				pg.draw.circle(screen, colours["gray"], self.rect.center, self.radius, 3)
+				pg.draw.circle(screen, COLOURS["gray"], self.rect.center, self.radius, 3)
 				self.draw_tower(screen)
-
-
-# Towers
-class Stone(Tower):
-	def __init__(self, game, pos):
-		self.name = "Stone"
-		self.game = game
-		self.pos = pos
-		self.level = 1
-		self.cost = [40, 50, 75]
-		self.firing_type = "splash"
-		self.platform = True
-		self.update_stats()
-		super().__init__()
-
-	def update_stats(self):
-		self.radius = int((TILESIZE//1.5 * (4 + int(self.level*1.5)))*TOWER_RADIUS_MULTIPLIER)
-		self.damage = 3 + (self.level * 2)
-		self.attack_speed = FPS*2.5 - ((self.level-1) * 4)
-		self.attack_cooldown = self.attack_speed*.9
-		self.attack_animation_time = 20  # self.attack_speed - self.attack_cooldown
-		self.loop_height = 50  # amount of pixels the projectile loops in the air when shot toward target
-		self.splash = 45 + (self.level * 5)
-
-
-class Fire(Tower):
-	def __init__(self, game, pos):
-		self.name = "Fire"
-		self.game = game
-		self.pos = pos
-		self.level = 1
-		self.cost = [35, 60, 75]
-		self.firing_type = "splash"
-		self.platform = True
-		self.update_stats()
-		super().__init__()
-
-	def update_stats(self):
-		self.radius = int((TILESIZE//1.5 * (5 + int(self.level*1.5)))*TOWER_RADIUS_MULTIPLIER)
-		self.damage = 2.3 + (self.level * 2)
-		self.attack_speed = FPS*3 - ((self.level-1) * 5)
-		self.attack_cooldown = self.attack_speed*.9
-		self.attack_animation_time = 15  # self.attack_speed - self.attack_cooldown
-		self.loop_height = 80  # amount of pixels the projectile loops in the air when shot toward target
-		self.splash = 55 + (self.level * 5)
-
-
-class Sand(Tower):
-	def __init__(self, game, pos):
-		self.name = "Sand"
-		self.game = game
-		self.pos = pos
-		self.level = 1
-		self.cost = [30, 55, 75]
-		self.firing_type = "splash"
-		self.platform = True
-		self.update_stats()
-		super().__init__()
-
-	def update_stats(self):
-		self.radius = int((TILESIZE//1.5 * (6 + int(self.level*1.5)))*TOWER_RADIUS_MULTIPLIER)
-		self.damage = 5 + (self.level * 2)
-		self.attack_speed = FPS*3.5 - ((self.level-1) * 3)
-		self.attack_cooldown = self.attack_speed
-		self.attack_animation_time = 15
-		self.loop_height = 80  # amount of pixels the projectile loops in the air when shot toward target
-		self.splash = 55 + (self.level * 5)
-
-class Archer(Tower):
-	def __init__(self, game, pos):
-		self.name = "Archer"
-		self.game = game
-		self.pos = pos
-		self.level = 1
-		self.cost = [35, 60, 80]
-		self.firing_type = "direct"
-		self.platform = False
-		self.update_stats()
-		super().__init__()
-
-	def update_stats(self):
-		self.radius = int((TILESIZE//1.5 * (6 + int(self.level*1.5)))*TOWER_RADIUS_MULTIPLIER)
-		self.damage = 0 + (self.level * 2)
-		self.attack_speed = FPS*1 - ((self.level-1) * 3)
-		self.attack_cooldown = self.attack_speed
-		self.attack_animation_time = self.attack_speed*0.2
-		self.loop_height = 0  # amount of pixels the projectile loops in the air when shot toward target
-		self.splash = 0

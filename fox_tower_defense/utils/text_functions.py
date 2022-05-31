@@ -1,4 +1,5 @@
-from SETTINGS import *
+from utils.SETTINGS import COLOURS
+import pygame as pg
 
 
 # Function found online to draw hollow text (no credit to me here)
@@ -25,8 +26,8 @@ def outline_text(font, message, fontcolor, outlinecolor):
     base = font.render(message, 0, fontcolor)
     outline = hollow_text(font, message, outlinecolor)
     img = pg.Surface(outline.get_size(), 16)
-    img.fill(colours["magenta"])
+    img.fill(COLOURS["magenta"])
     img.blit(base, (1, 1))
     img.blit(outline, (0, 0))
-    img.set_colorkey(colours["magenta"])
+    img.set_colorkey(COLOURS["magenta"])
     return img

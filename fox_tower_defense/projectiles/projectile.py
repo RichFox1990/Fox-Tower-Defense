@@ -1,6 +1,9 @@
-import random as rand
 import time
-from SETTINGS import *
+import pygame as pg
+import random as rand
+
+from utils.SETTINGS import PROJECTILE_SPEED, FPS, PARTICLE_ANIMATION_SPEED, COLOURS
+from utils.helper_classes import vec
 
 
 class Projectile(pg.sprite.Sprite):
@@ -149,7 +152,7 @@ class Projectile(pg.sprite.Sprite):
 
 	def particles(self, amount, offset=0):
 		if self.tower.name == "Fire":
-			col_list = [colours["red"], colours["orange"], colours["yellow"]]
+			col_list = [COLOURS["red"], COLOURS["orange"], COLOURS["yellow"]]
 			for iteration in range(amount):
 				mob_pos = vec(self.pos)
 				list_offset = [-offset, offset]
@@ -186,5 +189,5 @@ class Projectile(pg.sprite.Sprite):
 				pg.draw.circle(screen, particle[3], [int(particle[0][0]), int(particle[0][1])], int(particle[2]))
 		# if self.target != False:
 			# pass
-			# pg.draw.rect(screen, colours["blue"], (*self.crest, 10 ,10))
-			# pg.draw.rect(screen, colours["red"], (*self.target_pos, 10 ,10))
+			# pg.draw.rect(screen, COLOURS["blue"], (*self.crest, 10 ,10))
+			# pg.draw.rect(screen, COLOURS["red"], (*self.target_pos, 10 ,10))
