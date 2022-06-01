@@ -3,9 +3,9 @@ import time
 import random as rand
 import pygame as pg
 
-from utils.SETTINGS import MOB_START_POS, COLOURS, APPROACH_RADIUS
-from utils.helper_classes import vec
-from coins.coin import Coins
+from fox_tower_defense.utils.SETTINGS import MOB_START_POS, COLOURS, APPROACH_RADIUS
+from fox_tower_defense.utils.helper_classes import Vec
+from fox_tower_defense.coins.coin import Coins
 
 
 class Mob(pg.sprite.Sprite):
@@ -14,8 +14,8 @@ class Mob(pg.sprite.Sprite):
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.max_health = self.health
 		self.health_percentage = self.health / self.max_health
-		self.vel = vec(0, 0)
-		self.acc = vec(0, 0)
+		self.vel = Vec(0, 0)
+		self.acc = Vec(0, 0)
 		self.alive = True
 		self.death_delay = 0
 		self.particles = []
@@ -46,11 +46,11 @@ class Mob(pg.sprite.Sprite):
 
 		# depending if the first point the mobs are targeting is either a "x" or "y" vector, do the following (apply this random path offset to the correct coordinate)
 		if "y" in self.target_direction:
-			self.pos = vec(self.start_offset, MOB_START_POS)
+			self.pos = Vec(self.start_offset, MOB_START_POS)
 		else:
-			self.pos = vec(MOB_START_POS, self.start_offset)
+			self.pos = Vec(MOB_START_POS, self.start_offset)
 
-		self.pos -= vec(self.height, self.height)/2 # to account for using the center postion to blit (makes the mobs midbottom appear where the path offset was chosen)
+		self.pos -= Vec(self.height, self.height)/2 # to account for using the center postion to blit (makes the mobs midbottom appear where the path offset was chosen)
 
 		self.rect = self.image.get_rect(center = self.pos) # now set the rect we use to draw the image equal to the position
 
@@ -62,14 +62,14 @@ class Mob(pg.sprite.Sprite):
 			self.e_or_l = "early"
 		else:
 			self.e_or_l = "late"
-		self.desired = (vec(self.target + self.offset, self.pos.y) - self.pos)
+		self.desired = (Vec(self.target + self.offset, self.pos.y) - self.pos)
 
 		self.calculate_path_distances()
 
 		self.health_images = self.game.health_bar_images.copy()
 		self.health_original_width = self.health_images[1].get_width()
 		self.health_original_height = self.health_images[1].get_height()
-		self.health_rect = self.health_images[0].get_rect(center = self.rect.midtop + vec(0, -5))
+		self.health_rect = self.health_images[0].get_rect(center = self.rect.midtop + Vec(0, -5))
 
 		self.update_animation = time.time()
 		self.flipped = False
@@ -85,7 +85,7 @@ class Mob(pg.sprite.Sprite):
 			self.shadow_height = shad_height
 		self.shadow_surface = pg.Surface((self.width, self.shadow_height))
 		self.shadow_surface.fill(COLOURS["magenta"])
-		self.shadow_rect = self.shadow_surface.get_rect(midbottom = self.rect.midbottom - vec(0, self.shadow_height))
+		self.shadow_rect = self.shadow_surface.get_rect(midbottom = self.rect.midbottom - Vec(0, self.shadow_height))
 		pg.draw.ellipse(self.shadow_surface, COLOURS["black"], (0,0, self.width, self.shadow_height))
 		self.shadow_surface.set_colorkey(COLOURS["magenta"])
 		self.shadow_surface.set_alpha(100)
@@ -113,11 +113,11 @@ class Mob(pg.sprite.Sprite):
 	def follow_target(self, target, dt):
 
 		if self.target_direction == "x":
-			self.desired = vec(vec(target + self.offset, self.pos.y) - self.pos)
+			self.desired = Vec(Vec(target + self.offset, self.pos.y) - self.pos)
 			self.dist_from_target = abs(self.desired.x - self.offset)
 
 		if self.target_direction == "y":
-			self.desired = vec(vec(self.pos.x, target + self.offset - self.height/1.5) - self.pos)
+			self.desired = Vec(Vec(self.pos.x, target + self.offset - self.height/1.5) - self.pos)
 			self.dist_from_target = abs(self.desired.y - self.offset + self.height/1.5)
 
 		dist = self.desired.length()
@@ -256,8 +256,8 @@ class Mob(pg.sprite.Sprite):
 			self.acc = self.follow_target(self.target, dt)
 
 			self.rect.center = self.pos
-			self.shadow_rect.midtop = self.rect.midbottom + vec(0, -self.shadow_height/1.5)
-			self.health_rect.center = self.rect.midtop + vec(0, -5)
+			self.shadow_rect.midtop = self.rect.midbottom + Vec(0, -self.shadow_height/1.5)
+			self.health_rect.center = self.rect.midtop + Vec(0, -5)
 		else:
 			#self.death_particles()
 			self.death_actions()

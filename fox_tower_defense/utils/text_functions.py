@@ -1,4 +1,4 @@
-from utils.SETTINGS import COLOURS
+from .SETTINGS import COLOURS
 import pygame as pg
 
 

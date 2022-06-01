@@ -3,20 +3,20 @@ import os
 import pygame as pg
 import random as rand
 
-from utils.SETTINGS import COIN_SIZE, COLOURS, FPS, HAMMER_SIZE, HUD_IMAGE_SIZE, MOB_WIDE, SCREEN_HEIGHT, SCREEN_WIDTH, MOB_SIZE, MOB_SLIM, STARTING_MONEY, TOWER_SIZE, TILE_SIZE, WAVE_TIMER
-from utils.text_functions import outline_text
-from game_menus.main_menu import main_menu
-from game_menus.construction_menu import ConstructionMenu
-from utils.helper_classes import vec
-from mobs.orc import Orc
-from mobs.scorpion import Scorpion
-from mobs.purple_hippo import PurpleHippo
-from utils.TiledTMX import TiledMap
-from towers.stone_tower import Stone
-from towers.archer_tower import Archer
-from towers.fire_tower import Fire
-from towers.sand_tower import Sand
-from utils.WaveGeneration import create_all_waves 
+from fox_tower_defense.utils.SETTINGS import COIN_SIZE, COLOURS, FPS, HAMMER_SIZE, HUD_IMAGE_SIZE, MOB_WIDE, SCREEN_HEIGHT, SCREEN_WIDTH, MOB_SIZE, MOB_SLIM, STARTING_MONEY, TOWER_SIZE, TILE_SIZE, WAVE_TIMER
+from fox_tower_defense.utils.text_functions import outline_text
+from fox_tower_defense.game_menus.main_menu import main_menu
+from fox_tower_defense.game_menus.construction_menu import ConstructionMenu
+from fox_tower_defense.utils.helper_classes import Vec
+from fox_tower_defense.mobs.orc import Orc
+from fox_tower_defense.mobs.scorpion import Scorpion
+from fox_tower_defense.mobs.purple_hippo import PurpleHippo
+from fox_tower_defense.utils.TiledTMX import TiledMap
+from fox_tower_defense.towers.stone_tower import Stone
+from fox_tower_defense.towers.archer_tower import Archer
+from fox_tower_defense.towers.fire_tower import Fire
+from fox_tower_defense.towers.sand_tower import Sand
+from fox_tower_defense.utils.WaveGeneration import create_all_waves 
 
 
 class Game:
@@ -264,13 +264,13 @@ class Game:
         self.lifes_text = outline_text(self.lifes_font, str(
             self.lifes), COLOURS["white"], COLOURS["black"])
         self.lifes_rect = self.coin_text.get_rect(
-            midright=self.bottom_bar_rect.midright)  # + vec(-5, 0))
+            midright=self.bottom_bar_rect.midright)  # + Vec(-5, 0))
 
         self.skip_font = pg.font.Font(None, 35, bold=True)
         self.skip_text = outline_text(
             self.skip_font, "Press 'S' to commence to the next wave early", COLOURS["white"], COLOURS["black"])
         self.skip_text_rect = self.skip_text.get_rect(
-            center=self.bottom_bar_rect.midtop + vec(0, -25))
+            center=self.bottom_bar_rect.midtop + Vec(0, -25))
         self.win_text = outline_text(
             self.lifes_font, "-GAME COMPLETE- WIP", COLOURS["white"], COLOURS["black"])
         self.win_text_rect = self.win_text.get_rect(
@@ -278,7 +278,7 @@ class Game:
         self.info_text = outline_text(
             self.skip_font, "Press 'Esc' to quit -- Go into 'SETTINGS.py' to add/ edit waves --", COLOURS["white"], COLOURS["black"])
         self.info_text_rect = self.info_text.get_rect(
-            center=self.screen_rect.center + vec(0, 50))
+            center=self.screen_rect.center + Vec(0, 50))
 
         self.construct_rect = self.images["build_hammer"].get_rect(
             midbottom=self.bottom_bar_rect.midbottom)
@@ -520,7 +520,7 @@ class Game:
 
     # Draws the lifes, time, coins and images next to them
     def draw_HUD(self, screen):
-        spacer = vec(5, 1)
+        spacer = Vec(5, 1)
         screen.blit(self.images["menu"]["bottom_bar"], self.bottom_bar_rect)
         screen.blit(self.clock_text, self.clock_rect)  # Blit game clock
         screen.blit(self.coin_text, self.coin_rect)  # Blit money amount
@@ -628,7 +628,7 @@ class Game:
                 if event.type == pg.MOUSEMOTION:
                     if self.construct_rect.collidepoint(self.mpos):
                         self.construct_rect.midbottom = self.bottom_bar_rect.midbottom + \
-                            vec(0, -10)
+                            Vec(0, -10)
                     else:
                         self.construct_rect.midbottom = self.bottom_bar_rect.midbottom
 
@@ -663,11 +663,11 @@ class Game:
             pg.display.set_caption(str(self.clock.get_fps()))
             pg.display.update()
 
-
-playing = True
-g = Game()
-while True:
-    start = main_menu(g.map_img)
-    if start:
-        g.new_game()
-        start = g.run()
+def main():
+    playing = True
+    g = Game()
+    while True:
+        start = main_menu(g.map_img)
+        if start:
+            g.new_game()
+            start = g.run()

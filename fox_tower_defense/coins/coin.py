@@ -1,9 +1,9 @@
 import pygame as pg
 import random as rand
-from utils.SETTINGS import TILE_SIZE
 
-from utils.SETTINGS import COLOURS, TILE_SIZE
-from utils.helper_classes import vec
+from fox_tower_defense.utils.SETTINGS import TILE_SIZE
+from fox_tower_defense.utils.SETTINGS import COLOURS, TILE_SIZE
+from fox_tower_defense.utils.helper_classes import Vec
 
 
 # Coin class, drops upon mob death
@@ -76,13 +76,13 @@ class Coins(pg.sprite.Sprite):
 	# Method to slightly scatter the coin start position from the entitys center
 	def randomize_pos(self):
 		randomx, randomy = rand.randrange(-self.spread, self.spread), rand.randrange(-self.spread, self.spread)
-		self.rect.center += vec(randomx, randomy)
+		self.rect.center += Vec(randomx, randomy)
 		self.original_center = self.rect.center
-		self.shadow_rect.midtop = self.rect.midbottom# + vec(0, -5)
+		self.shadow_rect.midtop = self.rect.midbottom# + Vec(0, -5)
 
 	# this makes the coin follow the mouse if the mouse is within a certain distance from the coin
 	def follow_mouse(self, mpos, dt):
-		vector = vec(mpos) - vec(self.rect.center)
+		vector = Vec(mpos) - Vec(self.rect.center)
 		distance = vector.length()
 		if distance <= self.follow_radius:
 			if distance > 0:

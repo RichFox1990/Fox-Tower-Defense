@@ -2,8 +2,8 @@ import time
 import pygame as pg
 import random as rand
 
-from utils.SETTINGS import PROJECTILE_SPEED, FPS, PARTICLE_ANIMATION_SPEED, COLOURS
-from utils.helper_classes import vec
+from fox_tower_defense.utils.SETTINGS import PROJECTILE_SPEED, FPS, PARTICLE_ANIMATION_SPEED, COLOURS
+from fox_tower_defense.utils.helper_classes import Vec
 
 
 class Projectile(pg.sprite.Sprite):
@@ -28,10 +28,10 @@ class Projectile(pg.sprite.Sprite):
 
 		if self.tower.platform:
 			self.rect = self.image.get_rect(midbottom = self.tower.b_rect.midbottom)
-			self.pos = vec(self.rect.midbottom)
+			self.pos = Vec(self.rect.midbottom)
 		else:
 			self.rect = self.image.get_rect(center = self.tower.image_rect.midtop)
-			self.pos = vec(self.rect.center)
+			self.pos = Vec(self.rect.center)
 		self.loop_speed = self.tower.loop_height 			# height the projection arcs into the air towards target
 
 		self.target = False    		# target given from tower when tower shoot animation completes
@@ -48,19 +48,19 @@ class Projectile(pg.sprite.Sprite):
 	def set_target(self, target):
 		self.orig_rect = self.rect.copy()  	# used to reference when moving the projectile in "move" method
 		self.target = target
-		self.target_pos = target.rect.center# + vec(0, -5)
+		self.target_pos = target.rect.center# + Vec(0, -5)
 
-		t_pos = vec(self.target_pos)  # position i want the projectile to hit (midbottom of mob (the floor at mobs
+		t_pos = Vec(self.target_pos)  # position i want the projectile to hit (midbottom of mob (the floor at mobs
 		# feet))
-		my_pos = vec(self.pos)			# want to use the center of projectile to match with the above
+		my_pos = Vec(self.pos)			# want to use the center of projectile to match with the above
 
-		self.t_vec = vec(t_pos - my_pos)
+		self.t_vec = Vec(t_pos - my_pos)
 		self.t_vec_norm = self.t_vec.normalize()
 
 		self.shot_timer = 1 	# start the shot
 
 		if self.firing_type == "direct":
-			self.angle = self.t_vec.angle_to(vec(-1,0))
+			self.angle = self.t_vec.angle_to(Vec(-1,0))
 			self.image = pg.transform.rotate(self.image, self.angle)
 			self.rect = self.image.get_rect(center = self.rect.center)
 
@@ -70,7 +70,7 @@ class Projectile(pg.sprite.Sprite):
 		if self.firing_type == "splash":
 
 			if not self.hit:
-				self.pos = self.orig_rect.midbottom + vec(self.t_vec * stage_of_shot)
+				self.pos = self.orig_rect.midbottom + Vec(self.t_vec * stage_of_shot)
 
 				if stage_of_shot <= 0.5:
 					loop = -(self.loop_speed*2) * stage_of_shot
@@ -78,7 +78,7 @@ class Projectile(pg.sprite.Sprite):
 					stage_of_shot -= .5
 					loop = (self.loop_speed*2 * stage_of_shot) - self.loop_speed
 
-				self.pos += vec(0, loop)
+				self.pos += Vec(0, loop)
 				
 				self.rect.midbottom = self.pos
 
@@ -90,9 +90,9 @@ class Projectile(pg.sprite.Sprite):
 
 			try:
 				self.target_pos = self.target.rect.center
-				self.desired = vec(vec(self.target.rect.center) - self.pos)
+				self.desired = Vec(Vec(self.target.rect.center) - self.pos)
 
-				full_dist = vec(vec(self.target.rect.center) - vec(self.orig_rect.center))
+				full_dist = Vec(Vec(self.target.rect.center) - Vec(self.orig_rect.center))
 				dist = full_dist.length()
 
 			except:
@@ -105,7 +105,7 @@ class Projectile(pg.sprite.Sprite):
 
 			self.vel = (move_to * (dist*dt*(FPS/self.shot_total)))
 
-			self.pos += self.vel#self.orig_rect.midbottom + vec(self.t_vec * stage_of_shot)
+			self.pos += self.vel#self.orig_rect.midbottom + Vec(self.t_vec * stage_of_shot)
 			self.rect.center = self.pos
 
 	def handle_timer(self, dt):
@@ -122,7 +122,7 @@ class Projectile(pg.sprite.Sprite):
 	def attack(self):
 		if self.firing_type == "splash":
 			for mob in self.game.mobs:
-				dist = vec(self.target_pos) - vec(mob.rect.center)
+				dist = Vec(self.target_pos) - Vec(mob.rect.center)
 				dist = abs(dist.length())
 				if dist <= self.tower.splash:
 					if dist > 0:
@@ -154,13 +154,13 @@ class Projectile(pg.sprite.Sprite):
 		if self.tower.name == "Fire":
 			col_list = [COLOURS["red"], COLOURS["orange"], COLOURS["yellow"]]
 			for iteration in range(amount):
-				mob_pos = vec(self.pos)
+				mob_pos = Vec(self.pos)
 				list_offset = [-offset, offset]
 				offset = list_offset[rand.randrange(2)]
-				particle_pos = vec(1,0).rotate(rand.randrange(360))
+				particle_pos = Vec(1,0).rotate(rand.randrange(360))
 				particle_pos.scale_to_length(offset)
 				particle_pos += mob_pos
-				self.tracers.append([particle_pos, vec(rand.randint(0, 20) / 10 - 1, rand.randint(0, 20) / 10), rand.randint(1, 2), col_list[rand.randint(0, len(col_list)-1)]])
+				self.tracers.append([particle_pos, Vec(rand.randint(0, 20) / 10 - 1, rand.randint(0, 20) / 10), rand.randint(1, 2), col_list[rand.randint(0, len(col_list)-1)]])
 	 
 			for particle in self.tracers:
 				particle[0] += particle[1]

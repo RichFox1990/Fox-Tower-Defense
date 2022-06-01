@@ -1,7 +1,7 @@
 import pygame as pg
 
-from utils.SETTINGS import COLOURS
-from utils.helper_classes import vec
+from fox_tower_defense.utils.SETTINGS import COLOURS
+from fox_tower_defense.utils.helper_classes import Vec
 
 
 class TowerMenu:
@@ -34,9 +34,9 @@ class TowerMenu:
 		action = ["upgrade", "gem", "choose", "sell"]
 		self.buttons = []
 		for number, image in enumerate(self.button_images):
-			new_button = TowerMenuButton(self, image, (self.rect.center + vec(self.button_xy[order[number]])),
-								(self.rect.center + vec(self.text_xy[order[number]])), action[number], 12)
-			#print(self.rect.center, "+", vec(self.button_xy[order[number]]))
+			new_button = TowerMenuButton(self, image, (self.rect.center + Vec(self.button_xy[order[number]])),
+								(self.rect.center + Vec(self.text_xy[order[number]])), action[number], 12)
+			#print(self.rect.center, "+", Vec(self.button_xy[order[number]]))
 			self.buttons.append(new_button)
 
 	def update_button_values(self):
@@ -70,7 +70,7 @@ class TowerMenuButton:
 		self.font_size = font_size
 
 		# self.text_center = text_center
-		# self.offset_vec_to_add = vec(offset_vec_to_add)
+		# self.offset_vec_to_add = Vec(offset_vec_to_add)
 		self.build_button()
 
 	def build_button(self):

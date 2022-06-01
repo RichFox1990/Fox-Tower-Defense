@@ -1,5 +1,11 @@
 ## TOWER DEFENSE GAME IN PYTHON (PYGAME)
 
+## How to run
+- install poetry to your system if haven't already got it (https://python-poetry.org/)
+- navigate to root (where the "pyproject.toml" file is located)
+- poetry install
+- poetry run play
+
 ## GIF
 ![](gameplay25-5-2020.gif)
 

@@ -1,8 +1,8 @@
 import pygame as pg
 
-from utils.SETTINGS import COLOURS, TOWER_COSTS
-from game_menus.tower_menu import TowerMenuButton
-from utils.helper_classes import vec
+from fox_tower_defense.utils.SETTINGS import COLOURS, TOWER_COSTS
+from fox_tower_defense.game_menus.tower_menu import TowerMenuButton
+from fox_tower_defense.utils.helper_classes import Vec
 
 
 class ConstructionMenu:
@@ -15,7 +15,7 @@ class ConstructionMenu:
 		# self.text_xy =  # Dict of text blit locations (tl, tr, bl, br)
 		self.button_height = 55
 		self.spacing = int(self.button_height / 10)
-		self.start = vec(10, 0)
+		self.start = Vec(10, 0)
 		self.tower_names = self.game.tower_names
 		self.font_size = 15
 		self.create_tower_icons()  # list of 4 (change to grabbing info from tower)
@@ -37,11 +37,11 @@ class ConstructionMenu:
 		location = self.start
 		self.buttons = {}
 		for number, key in enumerate(self.button_images.keys()):
-			new_button = TowerMenuButton(self, self.button_images[key], (self.rect.midleft + vec((location[0] + self.button_height / 2), location[1])),
-								(self.rect.midleft + vec((location[0] + self.button_height / 2), location[1] - self.button_height / 2)), self.tower_names[number], 18)
-			# print(self.rect.center, "+", vec(self.button_xy[order[number]]))
+			new_button = TowerMenuButton(self, self.button_images[key], (self.rect.midleft + Vec((location[0] + self.button_height / 2), location[1])),
+								(self.rect.midleft + Vec((location[0] + self.button_height / 2), location[1] - self.button_height / 2)), self.tower_names[number], 18)
+			# print(self.rect.center, "+", Vec(self.button_xy[order[number]]))
 			self.buttons[key] = new_button
-			location += vec(self.spacing + self.button_height, 0)
+			location += Vec(self.spacing + self.button_height, 0)
 
 	def handle_click(self, mpos):
 		for key in self.buttons.keys():  # check through buttons
@@ -64,9 +64,9 @@ class ConstructionMenu:
 		for tower in self.game.tower_names:
 			button = self.buttons[tower]
 			cost = self.font.render(str(TOWER_COSTS[tower][0]), True, COLOURS["white"])
-			cost_rect = cost.get_rect(midtop=button.rect.midbottom + vec(0, 1))
+			cost_rect = cost.get_rect(midtop=button.rect.midbottom + Vec(0, 1))
 			name = self.font.render((tower), True, COLOURS["white"])
-			name_rect = name.get_rect(midbottom=button.rect.midtop + vec(0, -1))
+			name_rect = name.get_rect(midbottom=button.rect.midtop + Vec(0, -1))
 			self.tower_construct_info[tower] = [cost, cost_rect, name, name_rect]
 
 	def draw_cost_info(self, screen):

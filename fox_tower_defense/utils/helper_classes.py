@@ -1,3 +1,3 @@
 import pygame as pg
 
-vec = pg.math.Vector2
+Vec = pg.math.Vector2

@@ -1,11 +1,11 @@
 import itertools
 import pygame as pg
 
-from utils.SETTINGS import COLOURS, FPS, TILE_SIZE, TOWER_MULTIPLIER, TOWER_RADIUS_MULTIPLIER
-from utils.helper_classes import vec
-from game_menus.tower_menu import TowerMenu
-from projectiles.projectile import Projectile 
-from coins.coin import Coins 
+from fox_tower_defense.utils.SETTINGS import COLOURS, FPS, TILE_SIZE, TOWER_MULTIPLIER, TOWER_RADIUS_MULTIPLIER
+from fox_tower_defense.utils.helper_classes import Vec
+from fox_tower_defense.game_menus.tower_menu import TowerMenu
+from fox_tower_defense.projectiles.projectile import Projectile 
+from fox_tower_defense.coins.coin import Coins 
 
 
 # Individual tower radius, damage, speed, cooldown, splash radius all passed up from child class at the bottom of this page
@@ -67,16 +67,16 @@ class Tower(pg.sprite.Sprite):
 				self.back = self.animate_images[3]
 
 			if self.name == "Stone":
-				self.f_offset = vec(-2, 3)
-				self.b_offset = vec(0, 2)
+				self.f_offset = Vec(-2, 3)
+				self.b_offset = Vec(0, 2)
 
 			elif self.name == "Sand":
-				self.f_offset = vec(-4, -2)
-				self.b_offset = vec(0, 4)
+				self.f_offset = Vec(-4, -2)
+				self.b_offset = Vec(0, 4)
 
 			elif self.name == "Fire":
-				self.f_offset = vec(-2, -10)
-				self.b_offset = vec(0, 8)
+				self.f_offset = Vec(-2, -10)
+				self.b_offset = Vec(0, 8)
 				# correction to center properly
 
 			self.f_rect = self.front.get_rect(midtop = self.image_rect.center + self.f_offset) # front section rect
@@ -89,7 +89,7 @@ class Tower(pg.sprite.Sprite):
 	# setup the values of how many pixels are from the bottom of the firing platform to the top, and also how quick the attack time will be for the tower (taken from child class)
 	def setup_animation_values(self):
 		if self.platform:
-			direction_vec = vec(self.b_rect.top - self.image_rect.top) # distance in pixels how much we have to move to hit the top
+			direction_vec = Vec(self.b_rect.top - self.image_rect.top) # distance in pixels how much we have to move to hit the top
 			pixels = direction_vec.length() 
 
 			self.pixels = int(abs(pixels)*.8) # total of pixels to move the platform up from the bottom to the top of the animation ( *.7 = only using 70% of the distance)
@@ -101,8 +101,8 @@ class Tower(pg.sprite.Sprite):
 	def animate(self):
 		self.amount = self.attack_timer/self.attack_animation_time  # 0-1 measures how far the attack_timer is towards the end of the timer with a value 0-1 ( 0.5 = 50% , 1 = 100% etc) 
 
-		self.f_rect.midtop = self.orig_f_rect.midtop + vec(0, -(self.pixels*(self.amount))) # front section rect move rect by total pixels multiplied by the progress of the timer to 100%
-		self.b_rect.midbottom = self.f_rect.midtop + self.b_offset								# matches the back platform rect to the needed position dependant on the front rects ( + correction vec)
+		self.f_rect.midtop = self.orig_f_rect.midtop + Vec(0, -(self.pixels*(self.amount))) # front section rect move rect by total pixels multiplied by the progress of the timer to 100%
+		self.b_rect.midbottom = self.f_rect.midtop + self.b_offset								# matches the back platform rect to the needed position dependant on the front rects ( + correction Vec)
 
 
 	# Handle the 2 timers (attack_timers - used for the platform animation) and the (cooldown_timer - used to delay the next shots time depending on the stats of the tower)

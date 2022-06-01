@@ -1,5 +1,5 @@
-from towers.tower import Tower
-from utils.SETTINGS import FPS, TILE_SIZE, TOWER_RADIUS_MULTIPLIER
+from fox_tower_defense.towers.tower import Tower
+from fox_tower_defense.utils.SETTINGS import FPS, TILE_SIZE, TOWER_RADIUS_MULTIPLIER
 
 
 class Stone(Tower):

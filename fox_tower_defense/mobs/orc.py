@@ -1,5 +1,5 @@
-from utils.SETTINGS import COLOURS, MOB_SPEED_MULTIPLIER
-from mobs.mob import Mob
+from fox_tower_defense.utils.SETTINGS import COLOURS, MOB_SPEED_MULTIPLIER
+from fox_tower_defense.mobs.mob import Mob
 
 
 class Orc(Mob):

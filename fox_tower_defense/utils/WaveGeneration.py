@@ -1,4 +1,4 @@
-from utils.SETTINGS import *
+from fox_tower_defense.utils.SETTINGS import *
 import random as rand
 
 
