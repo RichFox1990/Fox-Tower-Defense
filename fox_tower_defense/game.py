@@ -2,6 +2,7 @@ import fnmatch
 import os
 import pygame as pg
 import random as rand
+from fox_tower_defense.game_menus.hud import HudBottomBar
 
 from fox_tower_defense.utils.SETTINGS import COIN_SIZE, COLOURS, FPS, HAMMER_SIZE, HUD_IMAGE_SIZE, MOB_WIDE, SCREEN_HEIGHT, SCREEN_WIDTH, MOB_SIZE, MOB_SLIM, STARTING_MONEY, TOWER_SIZE, TILE_SIZE, WAVE_TIMER
 from fox_tower_defense.utils.text_functions import outline_text
@@ -92,6 +93,9 @@ class Game:
 
         # Loads image of a 32x32 gridline for use when placing towers
         self.prep_grid()
+
+        # Build the HUD for the bottom status bar info
+        self.status_bar = HudBottomBar(self)
 
         # Build the construction menu for choosing a tower
         self.construction_menu = ConstructionMenu(self)
@@ -241,47 +245,47 @@ class Game:
                 image, (int(orig[0] * img[1]), int(orig[1] * img[1])))
             self.images["menu"][img[0]] = image
 
-        # SETUP RECTS
-        self.bottom_bar_rect = self.images["menu"]["bottom_bar"].get_rect(
-            bottomleft=self.screen_rect.bottomleft)
+        # # SETUP RECTS
+        # self.bottom_bar_rect = self.images["menu"]["bottom_bar"].get_rect(
+        #     bottomleft=self.screen_rect.bottomleft)
 
-        # Setup game Clock
-        self.clock_font = pg.font.Font(None, 50, bold=True)
-        self.clock_text = outline_text(
-            self.clock_font, "00", COLOURS["white"], COLOURS["black"])
-        self.clock_rect = self.clock_text.get_rect(
-            center=(self.screen_width // 2, 20))
+        # # Setup game Clock
+        # self.clock_font = pg.font.Font(None, 50, bold=True)
+        # self.clock_text = outline_text(
+        #     self.clock_font, "00", COLOURS["white"], COLOURS["black"])
+        # self.clock_rect = self.clock_text.get_rect(
+        #     center=(self.screen_width // 2, 20))
 
-        # Load and setup Coin display
-        self.coin_font = pg.font.Font(None, 50, bold=True)
-        self.coin_text = outline_text(self.coin_font, str(
-            int(self.money)), COLOURS["white"], COLOURS["black"])
-        self.coin_rect = self.coin_text.get_rect(
-            center=(self.bottom_bar_rect.width * .75, self.bottom_bar_rect.center[1]))
+        # # Load and setup Coin display
+        # self.coin_font = pg.font.Font(None, 50, bold=True)
+        # self.coin_text = outline_text(self.coin_font, str(
+        #     int(self.money)), COLOURS["white"], COLOURS["black"])
+        # self.coin_rect = self.coin_text.get_rect(
+        #     center=(self.bottom_bar_rect.width * .75, self.bottom_bar_rect.center[1]))
 
-        # Load and setup life display
-        self.lifes_font = pg.font.Font(None, 50, bold=True)
-        self.lifes_text = outline_text(self.lifes_font, str(
-            self.lifes), COLOURS["white"], COLOURS["black"])
-        self.lifes_rect = self.coin_text.get_rect(
-            midright=self.bottom_bar_rect.midright)  # + Vec(-5, 0))
+        # # Load and setup life display
+        # self.lifes_font = pg.font.Font(None, 50, bold=True)
+        # self.lifes_text = outline_text(self.lifes_font, str(
+        #     self.lifes), COLOURS["white"], COLOURS["black"])
+        # self.lifes_rect = self.coin_text.get_rect(
+        #     midright=self.bottom_bar_rect.midright)  # + Vec(-5, 0))
 
-        self.skip_font = pg.font.Font(None, 35, bold=True)
-        self.skip_text = outline_text(
-            self.skip_font, "Press 'S' to commence to the next wave early", COLOURS["white"], COLOURS["black"])
-        self.skip_text_rect = self.skip_text.get_rect(
-            center=self.bottom_bar_rect.midtop + Vec(0, -25))
-        self.win_text = outline_text(
-            self.lifes_font, "-GAME COMPLETE- WIP", COLOURS["white"], COLOURS["black"])
-        self.win_text_rect = self.win_text.get_rect(
-            center=self.screen_rect.center)
-        self.info_text = outline_text(
-            self.skip_font, "Press 'Esc' to quit -- Go into 'SETTINGS.py' to add/ edit waves --", COLOURS["white"], COLOURS["black"])
-        self.info_text_rect = self.info_text.get_rect(
-            center=self.screen_rect.center + Vec(0, 50))
+        # self.skip_font = pg.font.Font(None, 35, bold=True)
+        # self.skip_text = outline_text(
+        #     self.skip_font, "Press 'S' to commence to the next wave early", COLOURS["white"], COLOURS["black"])
+        # self.skip_text_rect = self.skip_text.get_rect(
+        #     center=self.bottom_bar_rect.midtop + Vec(0, -25))
+        # self.win_text = outline_text(
+        #     self.lifes_font, "-GAME COMPLETE- WIP", COLOURS["white"], COLOURS["black"])
+        # self.win_text_rect = self.win_text.get_rect(
+        #     center=self.screen_rect.center)
+        # self.info_text = outline_text(
+        #     self.skip_font, "Press 'Esc' to quit -- Go into 'SETTINGS.py' to add/ edit waves --", COLOURS["white"], COLOURS["black"])
+        # self.info_text_rect = self.info_text.get_rect(
+        #     center=self.screen_rect.center + Vec(0, 50))
 
-        self.construct_rect = self.images["build_hammer"].get_rect(
-            midbottom=self.bottom_bar_rect.midbottom)
+        # self.construct_rect = self.images["build_hammer"].get_rect(
+        #     midbottom=self.bottom_bar_rect.midbottom)
 
     # PREPS AN OUTLINE OF A 32x32 GRID (used on dev view)
     def prep_grid(self):
@@ -438,7 +442,7 @@ class Game:
             else:
                 self.show_construct_menu = False
 
-        elif self.construct_rect.collidepoint(mpos):
+        elif self.status_bar.construct_rect.collidepoint(mpos):
             self.show_construct_menu = not self.show_construct_menu
 
         if self.selected_tower != False:  # If theres a tower selected
@@ -514,25 +518,26 @@ class Game:
             time_display = f"0{str(int(self.time))}"
 
         self.clock_text = outline_text(
-            self.clock_font, time_display, COLOURS["white"], COLOURS["black"])
-        self.coin_text = outline_text(self.coin_font, str(
+            self.status_bar.clock_font, time_display, COLOURS["white"], COLOURS["black"])
+        self.coin_text = outline_text(self.status_bar.coin_font, str(
             self.money), COLOURS["white"], COLOURS["black"])
 
     # Draws the lifes, time, coins and images next to them
     def draw_HUD(self, screen):
-        spacer = Vec(5, 1)
-        screen.blit(self.images["menu"]["bottom_bar"], self.bottom_bar_rect)
-        screen.blit(self.clock_text, self.clock_rect)  # Blit game clock
-        screen.blit(self.coin_text, self.coin_rect)  # Blit money amount
-        screen.blit(self.images["heart"],
-                    self.images["heart"].get_rect(midright=self.lifes_rect.midleft - spacer))  # + self.lifes_rect.y))
-        screen.blit(self.images["gold_star"],
-                    self.images["gold_star"].get_rect(midright=self.coin_rect.midleft - spacer))  # + self.coin_rect.y))
-        screen.blit(self.lifes_text, self.lifes_rect)
-        screen.blit(self.images["build_hammer"], self.construct_rect)
+        # spacer = Vec(5, 1)
+        # screen.blit(self.images["menu"]["bottom_bar"], self.bottom_bar_rect)
+        # screen.blit(self.clock_text, self.clock_rect)  # Blit game clock
+        # screen.blit(self.coin_text, self.coin_rect)  # Blit money amount
+        # screen.blit(self.images["heart"],
+        #             self.images["heart"].get_rect(midright=self.lifes_rect.midleft - spacer))  # + self.lifes_rect.y))
+        # screen.blit(self.images["gold_star"],
+        #             self.images["gold_star"].get_rect(midright=self.coin_rect.midleft - spacer))  # + self.coin_rect.y))
+        # screen.blit(self.lifes_text, self.lifes_rect)
+        # screen.blit(self.images["build_hammer"], self.construct_rect)
 
-        if self.show_construct_menu:
-            self.construction_menu.draw(screen)
+        # if self.show_construct_menu:
+        #     self.construction_menu.draw(screen)
+        self.status_bar.draw(screen)
 
     # Draw loop (TODO: Tidy up into methods)
     def draw(self, screen):
@@ -551,12 +556,6 @@ class Game:
             i.draw(screen)
         if self.selected_tower != False:
             self.selected_tower.menu.draw(screen)
-
-        if not self.wave_active and not self.level_complete:
-            screen.blit(self.skip_text, self.skip_text_rect)
-        elif self.level_complete and self.wave_complete:
-            screen.blit(self.win_text, self.win_text_rect)
-            screen.blit(self.info_text, self.info_text_rect)
 
         self.draw_HUD(screen)
 
@@ -626,11 +625,11 @@ class Game:
                         pass
 
                 if event.type == pg.MOUSEMOTION:
-                    if self.construct_rect.collidepoint(self.mpos):
-                        self.construct_rect.midbottom = self.bottom_bar_rect.midbottom + \
+                    if self.status_bar.construct_rect.collidepoint(self.mpos):
+                        self.status_bar.construct_rect.midbottom = self.status_bar.bottom_bar_rect.midbottom + \
                             Vec(0, -10)
                     else:
-                        self.construct_rect.midbottom = self.bottom_bar_rect.midbottom
+                        self.status_bar.construct_rect.midbottom = self.status_bar.bottom_bar_rect.midbottom
 
                 if event.type == pg.MOUSEBUTTONDOWN and self.delay_counter == 0:
                     if event.button == 1:

@@ -1,5 +1,6 @@
-from fox_tower_defense.utils.SETTINGS import *
 import random as rand
+
+from fox_tower_defense.utils.SETTINGS import NUMBER_OF_WAVES,WAVE_1_MOB_COUNT
 
 
 def create_all_waves():
