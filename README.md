@@ -7,21 +7,21 @@
 - poetry run play
 
 ## GIF
-![](gameplay25-5-2020.gif)
+![](/fox_tower_defense/data/game_play25-5-2020.gif)
 
 ### FEATURES
 - Multiple animated towers and animated firing platforms and projectiles.
 - Direct fire and splash damage towers.
 - Various animated mobs with their own stats and difficulty.
 - Stats of mobs increase with each wave.
-- Tower independant targetting modes selectable in realtime by the player (speed[fast or slow], health[high or low], distance from base etc).
+- Tower independent targeting modes selectable in realtime by the player (speed[fast or slow], health[high or low], distance from base etc).
 - Random path offsets to give natural feel to spawning.
-- Interactable, seeking behaviors to coins.
+- Interacting, seeking behaviors to coins.
 - Menus for buying towers and upgrading towers.
 - Pause, resume from the main menu.
 
 #### Update 23/06/20
-- Added wave generation into seperate file/function
+- Added wave generation into separate file/function
 - Change size/Colors and image of main main.
 - Added visual feedback when hovering over construction hammer and towers.
 - Buffed fire tower damage by 10%.

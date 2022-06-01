@@ -12,16 +12,9 @@ class HudBottomBar:
         self.build_hammer_image = self.game.images["build_hammer"]
         self.heart_image = self.game.images["heart"]
         self.coin_image = self.game.images["gold_star"]
-        self.set_up()
+        self._set_up()
 
-    def build_rects(self):
-        pass
-
-    def set_up(self):
-        # SETUP RECTS
-        self.bottom_bar_rect = self.bottom_bar_background_image.get_rect(
-            bottomleft=self.game.screen_rect.bottomleft)
-
+    def _set_up_clock_display(self):
         # Setup game Clock
         self.clock_font = pg.font.Font(None, 50, bold=True)
         self.clock_text = outline_text(
@@ -29,6 +22,7 @@ class HudBottomBar:
         self.clock_rect = self.clock_text.get_rect(
             center=(self.game.screen_width // 2, 20))
 
+    def _set_up_coin_display(self):
         # Load and setup Coin display
         self.coin_font = pg.font.Font(None, 50, bold=True)
         self.coin_text = outline_text(self.coin_font, str(
@@ -36,6 +30,7 @@ class HudBottomBar:
         self.coin_rect = self.coin_text.get_rect(
             center=(self.bottom_bar_rect.width * .75, self.bottom_bar_rect.center[1]))
 
+    def _set_up_life_display(self):
         # Load and setup life display
         self.lifes_font = pg.font.Font(None, 50, bold=True)
         self.lifes_text = outline_text(self.lifes_font, str(
@@ -43,22 +38,39 @@ class HudBottomBar:
         self.lifes_rect = self.coin_text.get_rect(
             midright=self.bottom_bar_rect.midright)  # + Vec(-5, 0))
 
+    def _set_up_wave_skip_text_display(self):
         self.skip_font = pg.font.Font(None, 35, bold=True)
         self.skip_text = outline_text(
             self.skip_font, "Press 'S' to commence to the next wave early", COLOURS["white"], COLOURS["black"])
         self.skip_text_rect = self.skip_text.get_rect(
             center=self.bottom_bar_rect.midtop + Vec(0, -25))
+
+    def _set_up_win_text_display(self):
         self.win_text = outline_text(
             self.lifes_font, "-GAME COMPLETE- WIP", COLOURS["white"], COLOURS["black"])
         self.win_text_rect = self.win_text.get_rect(
             center=self.game.screen_rect.center)
+
+    def _set_up_info_text_display(self):
         self.info_text = outline_text(
             self.skip_font, "Press 'Esc' to quit -- Go into 'SETTINGS.py' to add/ edit waves --", COLOURS["white"], COLOURS["black"])
         self.info_text_rect = self.info_text.get_rect(
             center=self.game.screen_rect.center + Vec(0, 50))
 
+    def _set_up_bar_and_hammer_rects(self):
+        self.bottom_bar_rect = self.bottom_bar_background_image.get_rect(
+            bottomleft=self.game.screen_rect.bottomleft)
         self.construct_rect = self.build_hammer_image.get_rect(
             midbottom=self.bottom_bar_rect.midbottom)
+
+    def _set_up(self):
+        self._set_up_bar_and_hammer_rects()
+        self._set_up_clock_display()
+        self._set_up_coin_display()
+        self._set_up_life_display()
+        self._set_up_wave_skip_text_display()
+        self._set_up_win_text_display()
+        self._set_up_info_text_display()
 
     def draw(self, screen):
         spacer = Vec(5, 1)

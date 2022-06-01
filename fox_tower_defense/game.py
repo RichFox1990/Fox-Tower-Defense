@@ -91,7 +91,7 @@ class Game:
         # Loads all images and sound files to dictionaries
         self.initialize_media()
 
-        # Loads image of a 32x32 gridline for use when placing towers
+        # Loads image of a 32x32 grid line for use when placing towers
         self.prep_grid()
 
         # Build the HUD for the bottom status bar info
@@ -245,48 +245,6 @@ class Game:
                 image, (int(orig[0] * img[1]), int(orig[1] * img[1])))
             self.images["menu"][img[0]] = image
 
-        # # SETUP RECTS
-        # self.bottom_bar_rect = self.images["menu"]["bottom_bar"].get_rect(
-        #     bottomleft=self.screen_rect.bottomleft)
-
-        # # Setup game Clock
-        # self.clock_font = pg.font.Font(None, 50, bold=True)
-        # self.clock_text = outline_text(
-        #     self.clock_font, "00", COLOURS["white"], COLOURS["black"])
-        # self.clock_rect = self.clock_text.get_rect(
-        #     center=(self.screen_width // 2, 20))
-
-        # # Load and setup Coin display
-        # self.coin_font = pg.font.Font(None, 50, bold=True)
-        # self.coin_text = outline_text(self.coin_font, str(
-        #     int(self.money)), COLOURS["white"], COLOURS["black"])
-        # self.coin_rect = self.coin_text.get_rect(
-        #     center=(self.bottom_bar_rect.width * .75, self.bottom_bar_rect.center[1]))
-
-        # # Load and setup life display
-        # self.lifes_font = pg.font.Font(None, 50, bold=True)
-        # self.lifes_text = outline_text(self.lifes_font, str(
-        #     self.lifes), COLOURS["white"], COLOURS["black"])
-        # self.lifes_rect = self.coin_text.get_rect(
-        #     midright=self.bottom_bar_rect.midright)  # + Vec(-5, 0))
-
-        # self.skip_font = pg.font.Font(None, 35, bold=True)
-        # self.skip_text = outline_text(
-        #     self.skip_font, "Press 'S' to commence to the next wave early", COLOURS["white"], COLOURS["black"])
-        # self.skip_text_rect = self.skip_text.get_rect(
-        #     center=self.bottom_bar_rect.midtop + Vec(0, -25))
-        # self.win_text = outline_text(
-        #     self.lifes_font, "-GAME COMPLETE- WIP", COLOURS["white"], COLOURS["black"])
-        # self.win_text_rect = self.win_text.get_rect(
-        #     center=self.screen_rect.center)
-        # self.info_text = outline_text(
-        #     self.skip_font, "Press 'Esc' to quit -- Go into 'SETTINGS.py' to add/ edit waves --", COLOURS["white"], COLOURS["black"])
-        # self.info_text_rect = self.info_text.get_rect(
-        #     center=self.screen_rect.center + Vec(0, 50))
-
-        # self.construct_rect = self.images["build_hammer"].get_rect(
-        #     midbottom=self.bottom_bar_rect.midbottom)
-
     # PREPS AN OUTLINE OF A 32x32 GRID (used on dev view)
     def prep_grid(self):
         self.empty_grid = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -346,7 +304,7 @@ class Game:
                 # print(f"{self.wave}")
                 if self.wave[num][1] > 0:
                     self.wave[num][1] -= 1
-                    # Spawn that refence mob (passing the game instance into the class)
+                    # Spawn that reference mob (passing the game instance into the class)
                     self.spawn_mobs[self.wave[num][0]](self)
 
                 self.mob_timer = 0  # reset time
@@ -378,7 +336,7 @@ class Game:
             self.next_wave()
             self.next_wave_timer = WAVE_TIMER
 
-    # Method to choose a tower temporary (TODO: intregrate choice to a menu and change/remove this method to suit this)
+    # Method to choose a tower temporary (TODO: integrate choice to a menu and change/remove this method to suit this)
     def new_tower(self, tower_name):
         # if cost <= self.player_money:
         tower_spawn = {"Stone": Stone, "Fire": Fire,
@@ -418,7 +376,7 @@ class Game:
 
         self.handle_grid(False)
 
-    # BLITS WHITE SQUARE ON CURRENT SELECTED SQUARE OF MAP WHEN CREATING/MOVING TOWERS (pass false to enable drawing of the grid (dev view))
+    # DISPLAYS WHITE SQUARE ON CURRENT SELECTED SQUARE OF MAP WHEN CREATING/MOVING TOWERS (pass false to enable drawing of the grid (dev view))
     def handle_grid(self, tower=True):
         screen = self.screen
         self.grid = self.empty_grid.copy()
@@ -465,14 +423,14 @@ class Game:
                     if tower.rect.collidepoint(mpos):
                         tower_collide.append("clicked")
                         # print("clicked on tower")
-                        # If the tower you clicked isnt the same as the one already selected
+                        # If the tower you clicked isn't the same as the one already selected
                         if self.selected_tower != False and self.selected_tower != tower:
                             self.selected_tower.selected = False
                         self.selected_tower = tower
                         tower.selected = True
 
                 if len(
-                        tower_collide) == 0:  # If you didnt click on any other tower (i.e. you clicked onto the map somewhere)
+                        tower_collide) == 0:  # If you didn't click on any other tower (i.e. you clicked onto the map somewhere)
                     self.selected_tower.selected = False  # Deselect everything
                     self.selected_tower = False
 
@@ -511,7 +469,7 @@ class Game:
         for i in self.projectiles:
             i.update(dt)
 
-        # Update Clock ( TODO: put in seperate method)
+        # Update Clock ( TODO: put in separate method)
         self.time += dt
         time_display = str(int(self.time))
         if len(str(int(self.time))) < 1:
@@ -524,19 +482,6 @@ class Game:
 
     # Draws the lifes, time, coins and images next to them
     def draw_HUD(self, screen):
-        # spacer = Vec(5, 1)
-        # screen.blit(self.images["menu"]["bottom_bar"], self.bottom_bar_rect)
-        # screen.blit(self.clock_text, self.clock_rect)  # Blit game clock
-        # screen.blit(self.coin_text, self.coin_rect)  # Blit money amount
-        # screen.blit(self.images["heart"],
-        #             self.images["heart"].get_rect(midright=self.lifes_rect.midleft - spacer))  # + self.lifes_rect.y))
-        # screen.blit(self.images["gold_star"],
-        #             self.images["gold_star"].get_rect(midright=self.coin_rect.midleft - spacer))  # + self.coin_rect.y))
-        # screen.blit(self.lifes_text, self.lifes_rect)
-        # screen.blit(self.images["build_hammer"], self.construct_rect)
-
-        # if self.show_construct_menu:
-        #     self.construction_menu.draw(screen)
         self.status_bar.draw(screen)
 
     # Draw loop (TODO: Tidy up into methods)
@@ -549,7 +494,7 @@ class Game:
             self.handle_grid()
         if self.draw_overlay:
             self.draw_overlays(screen)
-        # sorts blitting order (sprites that is the lowest on the screen postion gets blitted over the top of anything above it)
+        # sorts blitting order (sprites that is the lowest on the screen i gets blitted over the top of anything above it)
         for sprite in sorted(self.all_sprites, key=lambda spr: spr.rect.bottom):
             sprite.draw(screen)
         for i in self.projectiles:
@@ -560,7 +505,6 @@ class Game:
         self.draw_HUD(screen)
 
     # MAIN GAME LOOP (TODO: tidy up into methods more)
-
     def run(self):
 
         while not self.defeated:
