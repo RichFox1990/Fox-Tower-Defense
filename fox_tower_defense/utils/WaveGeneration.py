@@ -1,6 +1,6 @@
 import random as rand
 
-from fox_tower_defense.utils.SETTINGS import NUMBER_OF_WAVES,WAVE_1_MOB_COUNT
+from fox_tower_defense.utils.SETTINGS import NUMBER_OF_WAVES, WAVE_1_MOB_COUNT
 
 
 def create_all_waves():
@@ -29,7 +29,8 @@ def create_all_waves():
             elif monster_choice == 'Purple_Hippo':
                 number_of_hippos += 1
 
-        wave_dict[j] = [['Orc', number_of_orcs], ['Scorpion', number_of_scorpions], ['Purple_Hippo', number_of_hippos]]
+        wave_dict[j] = [['Orc', number_of_orcs], ['Scorpion',
+                                                  number_of_scorpions], ['Purple_Hippo', number_of_hippos]]
 
         mobs_in_wave += rand.randint(3, 8)
 

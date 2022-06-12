@@ -1,12 +1,15 @@
 import pygame as pg
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from fox_tower_defense.game import Game
 from fox_tower_defense.utils.SETTINGS import COLOURS
 from fox_tower_defense.utils.helper_classes import Vec
 from fox_tower_defense.utils.text_functions import outline_text
 
 
 class HudBottomBar:
-    def __init__(self, game):
+    def __init__(self, game: 'Game'):
         self.game = game
         self.bottom_bar_background_image = self.game.images["menu"]["bottom_bar"]
         self.build_hammer_image = self.game.images["build_hammer"]
@@ -72,6 +75,19 @@ class HudBottomBar:
         self._set_up_win_text_display()
         self._set_up_info_text_display()
 
+    def update(self, time_passed, money_amount):
+        time_display = str(int(time_passed))
+        if len(str(int(time_passed))) < 1:
+            time_display = f"0{str(int(time_passed))}"
+
+        self.clock_text = outline_text(
+            self.clock_font, time_display, COLOURS["white"], COLOURS["black"])
+        self.coin_text = outline_text(self.coin_font, str(
+            money_amount), COLOURS["white"], COLOURS["black"])
+
+    def is_build_clicked_on(self, mpos):
+        return self.construct_rect.collidepoint(mpos)
+
     def draw(self, screen):
         spacer = Vec(5, 1)
         screen.blit(self.bottom_bar_background_image, self.bottom_bar_rect)
@@ -84,9 +100,9 @@ class HudBottomBar:
         screen.blit(self.lifes_text, self.lifes_rect)
         screen.blit(self.build_hammer_image, self.construct_rect)
 
-        if not self.game.wave_active and not self.game.level_complete:
+        if self.game.wave_not_active_and_level_not_complete():
             screen.blit(self.skip_text, self.skip_text_rect)
-        elif self.game.level_complete and self.game.wave_complete:
+        elif self.game.is_game_won():
             screen.blit(self.win_text, self.win_text_rect)
             screen.blit(self.info_text, self.info_text_rect)
 

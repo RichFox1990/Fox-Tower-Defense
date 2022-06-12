@@ -1,4 +1,8 @@
 import pygame as pg
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from fox_tower_defense.game import Game
 
 from fox_tower_defense.utils.SETTINGS import COLOURS, TOWER_COSTS
 from fox_tower_defense.game_menus.tower_menu import TowerMenuButton
@@ -7,7 +11,7 @@ from fox_tower_defense.utils.helper_classes import Vec
 
 class ConstructionMenu:
     # img = self.game.build_menu_img, button_xy = self.game.build_button_xy, text_xy = self.game.build_text_xy):
-    def __init__(self, game):
+    def __init__(self, game: 'Game'):
         self.game = game
 
         self.image = self.game.images["menu"]["tower_construct_menu"]

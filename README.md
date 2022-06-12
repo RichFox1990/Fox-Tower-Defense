@@ -33,4 +33,4 @@
 ### Ongoing project
 
 Credit:
-SN33DS - for the endless wave setup
+SN33DS - for the initial endless wave setup

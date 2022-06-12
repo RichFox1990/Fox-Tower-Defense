@@ -17,7 +17,7 @@ from fox_tower_defense.towers.stone_tower import Stone
 from fox_tower_defense.towers.archer_tower import Archer
 from fox_tower_defense.towers.fire_tower import Fire
 from fox_tower_defense.towers.sand_tower import Sand
-from fox_tower_defense.utils.WaveGeneration import create_all_waves 
+from fox_tower_defense.utils.WaveGeneration import create_all_waves
 
 
 class Game:
@@ -400,7 +400,7 @@ class Game:
             else:
                 self.show_construct_menu = False
 
-        elif self.status_bar.construct_rect.collidepoint(mpos):
+        elif self.status_bar.is_build_clicked_on(mpos):
             self.show_construct_menu = not self.show_construct_menu
 
         if self.selected_tower != False:  # If theres a tower selected
@@ -444,10 +444,25 @@ class Game:
                     self.selected_tower = tower
                     tower.selected = True
 
+    def is_wave_active(self):
+        return self.wave_active
+
+    def is_level_complete(self):
+        return self.level_complete
+
+    def is_wave_complete(self):
+        return self.wave_complete
+
+    def is_game_won(self):  # expand when more levels added
+        return self.level_complete and self.wave_complete
+
+    def wave_not_active_and_level_not_complete(self):
+        return not self.is_wave_active() and not self.is_level_complete()
+
     # GAME UPDATE LOOP
     def update(self, mpos, dt):
 
-        if self.wave_active:
+        if self.is_wave_active():
             self.handle_wave(dt)
 
         self.wave_countdown(dt)
@@ -469,16 +484,8 @@ class Game:
         for i in self.projectiles:
             i.update(dt)
 
-        # Update Clock ( TODO: put in separate method)
         self.time += dt
-        time_display = str(int(self.time))
-        if len(str(int(self.time))) < 1:
-            time_display = f"0{str(int(self.time))}"
-
-        self.clock_text = outline_text(
-            self.status_bar.clock_font, time_display, COLOURS["white"], COLOURS["black"])
-        self.coin_text = outline_text(self.status_bar.coin_font, str(
-            self.money), COLOURS["white"], COLOURS["black"])
+        self.status_bar.update(self.time, self.money)
 
     # Draws the lifes, time, coins and images next to them
     def draw_HUD(self, screen):
@@ -552,7 +559,7 @@ class Game:
                         self.draw_overlay = not self.draw_overlay
 
                     if event.key == pg.K_s:
-                        if not self.wave_active:
+                        if not self.is_wave_active():
                             self.next_wave_timer = 0
 
                     if event.key == pg.K_b:
@@ -571,7 +578,7 @@ class Game:
                 if event.type == pg.MOUSEMOTION:
                     if self.status_bar.construct_rect.collidepoint(self.mpos):
                         self.status_bar.construct_rect.midbottom = self.status_bar.bottom_bar_rect.midbottom + \
-                            Vec(0, -10)
+                            Vec(0, -5)
                     else:
                         self.status_bar.construct_rect.midbottom = self.status_bar.bottom_bar_rect.midbottom
 
@@ -605,6 +612,7 @@ class Game:
 
             pg.display.set_caption(str(self.clock.get_fps()))
             pg.display.update()
+
 
 def main():
     playing = True
