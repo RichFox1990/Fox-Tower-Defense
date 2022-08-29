@@ -63,8 +63,8 @@ class TowerMenu:
         screen.blit(self.image, self.rect)
         # pg.draw.rect(screen, COLOURS["red"], self.rect, 1)
         for button in self.buttons:
-            button.draw(screen)
-    # pg.draw.rect(screen, COLOURS["red"], button.rect, 1)
+            button.draw(screen, self.game.mpos)
+        # pg.draw.rect(screen, COLOURS["red"], button.rect, 1)
 
 
 class TowerMenuButton:
@@ -83,6 +83,9 @@ class TowerMenuButton:
 
     def build_button(self):
         self.rect = self.image.get_rect(center=self.location)
+        self.highlight = self.image.copy()
+        self.highlight.fill((255, 255, 128), special_flags=pg.BLEND_RGB_ADD)
+        self.highlight.set_alpha(55)
 
     def render_text(self):
         self.value_font = pg.font.SysFont(
@@ -92,8 +95,10 @@ class TowerMenuButton:
         # self.value = outline_text(self.value_font, str(self.button_value), COLOURS["white"], COLOURS["black"])
         self.value_rect = self.value.get_rect(center=self.text_location)
 
-    def draw(self, screen):
+    def draw(self, screen, mpos):
         screen.blit(self.image, self.rect)
+        if self.rect.collidepoint(mpos):
+            screen.blit(self.highlight, self.rect)
         try:
             screen.blit(self.value, self.value_rect)
         except:

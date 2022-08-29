@@ -12,12 +12,12 @@ from fox_tower_defense.utils.helper_classes import Vec
 from fox_tower_defense.mobs.orc import Orc
 from fox_tower_defense.mobs.scorpion import Scorpion
 from fox_tower_defense.mobs.purple_hippo import PurpleHippo
-from fox_tower_defense.utils.TiledTMX import TiledMap
+from fox_tower_defense.map.tiled_tmx import TiledMap
 from fox_tower_defense.towers.stone_tower import Stone
 from fox_tower_defense.towers.archer_tower import Archer
 from fox_tower_defense.towers.fire_tower import Fire
 from fox_tower_defense.towers.sand_tower import Sand
-from fox_tower_defense.utils.WaveGeneration import create_all_waves
+from fox_tower_defense.utils.wave_generation import create_all_waves
 
 
 class Game:
@@ -617,7 +617,7 @@ class Game:
 def main():
     playing = True
     g = Game()
-    while True:
+    while playing:
         start = main_menu(g.map_img)
         if start:
             g.new_game()
