@@ -4,12 +4,7 @@ Bottom bar status (time, money, wave, next wave etc)
 - decide if you build tower from this bar or another side bar
 ** partly implemented - build towers and HUD info moved down
 
-- change timers to ensure they don't continue if game is paused
-
-use image for the tower upgrading
-** decide on button style **done
-- make tech tree/ level limits for towers (dict, variables etc)
-- consider using JSON?
+- make tech tree/ level limits for towers (dict, variables etc) ** partitially done
 
 Direct fire towers
 - archer, magic **archer done**

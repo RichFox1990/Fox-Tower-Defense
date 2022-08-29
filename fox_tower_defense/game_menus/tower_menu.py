@@ -40,7 +40,7 @@ class TowerMenu:
         action = ["upgrade", "gem", "choose", "sell"]
         self.buttons = []
         for number, image in enumerate(self.button_images):
-            new_button = TowerMenuButton(self, image, (self.rect.center + Vec(self.button_xy[order[number]])),
+            new_button = TowerMenuButton(self, image.copy(), (self.rect.center + Vec(self.button_xy[order[number]])),
                                          (self.rect.center + Vec(self.text_xy[order[number]])), action[number], 12)
             #print(self.rect.center, "+", Vec(self.button_xy[order[number]]))
             self.buttons.append(new_button)

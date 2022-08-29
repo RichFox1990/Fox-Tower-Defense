@@ -1,9 +1,10 @@
+import datetime
 import pygame as pg
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from fox_tower_defense.game import Game
-from fox_tower_defense.utils.SETTINGS import COLOURS
+from fox_tower_defense.utils.SETTINGS import COLOURS, WAVE_TIMER
 from fox_tower_defense.utils.helper_classes import Vec
 from fox_tower_defense.utils.text_functions import outline_text
 
@@ -66,6 +67,18 @@ class HudBottomBar:
         self.construct_rect = self.build_hammer_image.get_rect(
             midbottom=self.bottom_bar_rect.midbottom)
 
+    def _set_up_next_wave_countdown_bar(self):
+        self.wave_timer_bar_orginal = pg.Surface((275, 15))
+        self.wave_timer_bar_orginal.fill(COLOURS["honeydew"])
+        self.wave_timer_bar = self.wave_timer_bar_orginal.copy()
+        self.wave_timer_background_bar = self.wave_timer_bar_orginal.copy()
+        self.wave_timer_background_bar.fill(COLOURS["darkgray"])
+        self.wave_timer_bar_rect = self.wave_timer_bar.get_rect(
+            midleft=self.bottom_bar_rect.midleft + Vec(15, 3.25))
+
+        # size = self.wave_timer_bar.get_size()
+        # self.rect_image = pg.Surface(size, pg.SRCALPHA)
+
     def _set_up(self):
         self._set_up_bar_and_hammer_rects()
         self._set_up_clock_display()
@@ -74,16 +87,16 @@ class HudBottomBar:
         self._set_up_wave_skip_text_display()
         self._set_up_win_text_display()
         self._set_up_info_text_display()
+        self._set_up_next_wave_countdown_bar()
 
-    def update(self, time_passed, money_amount):
-        time_display = str(int(time_passed))
-        if len(str(int(time_passed))) < 1:
-            time_display = f"0{str(int(time_passed))}"
+    def update(self, time_passed, money_amount, time_until_next_wave):
+        time_display = datetime.timedelta(seconds=int(time_passed))
 
         self.clock_text = outline_text(
-            self.clock_font, time_display, COLOURS["white"], COLOURS["black"])
+            self.clock_font, str(time_display), COLOURS["white"], COLOURS["black"])
         self.coin_text = outline_text(self.coin_font, str(
             money_amount), COLOURS["white"], COLOURS["black"])
+        self.wave_timer_bar = pg.transform.scale(self.wave_timer_bar_orginal, (275 * (time_until_next_wave / WAVE_TIMER), 15))
 
     def is_build_clicked_on(self, mpos):
         return self.construct_rect.collidepoint(mpos)
@@ -99,6 +112,12 @@ class HudBottomBar:
                     self.coin_image.get_rect(midright=self.coin_rect.midleft - spacer))  # + self.coin_rect.y))
         screen.blit(self.lifes_text, self.lifes_rect)
         screen.blit(self.build_hammer_image, self.construct_rect)
+        
+        screen.blit(self.wave_timer_background_bar, self.wave_timer_bar_rect)
+        screen.blit(self.wave_timer_bar, self.wave_timer_bar_rect)
+        # pg.draw.rect(self.wave_timer_bar, (255, 255, 255), (0, 0, 275, 15), border_radius=5)
+        # self.image = self.wave_timer_bar.copy().convert_alpha()
+        # screen.blit(self.wave_timer_bar, (0, 0), None) 
 
         if self.game.wave_not_active_and_level_not_complete():
             screen.blit(self.skip_text, self.skip_text_rect)

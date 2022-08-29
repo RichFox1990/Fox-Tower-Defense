@@ -57,6 +57,7 @@ class Game:
         self.setup_waves()
         self.new()
         self.print = True
+        self.fast_forward = False
 
     # SETS THE FOLDER VARIABLES and BUILDS MAP FROM THE TMX FILE ETC
     def load_data(self):
@@ -370,10 +371,6 @@ class Game:
         for rect in self.map.obstacles:
             pg.draw.rect(screen, COLOURS["red"], rect, 2)
 
-        rects = [self.clock_rect, self.coin_rect, self.lifes_rect]
-        for rect in rects:
-            pg.draw.rect(screen, COLOURS["red"], rect, 1)
-
         self.handle_grid(False)
 
     # DISPLAYS WHITE SQUARE ON CURRENT SELECTED SQUARE OF MAP WHEN CREATING/MOVING TOWERS (pass false to enable drawing of the grid (dev view))
@@ -485,7 +482,7 @@ class Game:
             i.update(dt)
 
         self.time += dt
-        self.status_bar.update(self.time, self.money)
+        self.status_bar.update(self.time, self.money, self.next_wave_timer)
 
     # Draws the lifes, time, coins and images next to them
     def draw_HUD(self, screen):
@@ -517,7 +514,8 @@ class Game:
         while not self.defeated:
 
             dt = self.clock.tick(FPS) / 1000
-
+            if self.fast_forward:
+                dt = dt*2
             self.click = False
             self.mpos = pg.mouse.get_pos()
 
