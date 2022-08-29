@@ -52,6 +52,10 @@ class TowerMenu:
                     button.button_value = self.tower.cost[self.tower.level]
                 elif button.action == "gem":
                     button.button_value = self.tower.level
+            elif button.action in ["upgrade", "gem"]:
+                button.button_value = "-MAX-"
+                button.handle_max_level_reached()
+
             if button.action == "choose":
                 button.button_value = self.tower.fire_mode
             if button.action == "sell":
@@ -71,18 +75,23 @@ class TowerMenuButton:
     def __init__(self, menu, img, location, text_location, action, font_size, button_value=False):
         self.menu = menu
         self.image = img
-        self.action = action
         self.location = location
+        self.rect = self.image.get_rect(center=self.location)
+        self.action = action
         self.text_location = text_location
         self.button_value = button_value
         self.font_size = font_size
+        self.max_level_reached = False
 
         # self.text_center = text_center
         # self.offset_vec_to_add = Vec(offset_vec_to_add)
-        self.build_button()
+        self.build_button_image_overlays()
 
-    def build_button(self):
-        self.rect = self.image.get_rect(center=self.location)
+    def handle_max_level_reached(self):
+        self.max_level_reached = True
+        self.image.set_alpha(85)
+
+    def build_button_image_overlays(self):
         self.highlight = self.image.copy()
         self.highlight.fill((255, 255, 128), special_flags=pg.BLEND_RGB_ADD)
         self.highlight.set_alpha(55)
@@ -97,7 +106,7 @@ class TowerMenuButton:
 
     def draw(self, screen, mpos):
         screen.blit(self.image, self.rect)
-        if self.rect.collidepoint(mpos):
+        if self.rect.collidepoint(mpos) and not self.max_level_reached:
             screen.blit(self.highlight, self.rect)
         try:
             screen.blit(self.value, self.value_rect)
