@@ -2,6 +2,7 @@ import fnmatch
 import os
 import pygame as pg
 import random as rand
+import itertools
 from fox_tower_defense.game_menus.hud import HudBottomBar
 
 from fox_tower_defense.utils.SETTINGS import COIN_SIZE, COLOURS, FPS, HAMMER_SIZE, HUD_IMAGE_SIZE, MOB_WIDE, SCREEN_HEIGHT, SCREEN_WIDTH, MOB_SIZE, MOB_SLIM, STARTING_MONEY, TOWER_SIZE, TILE_SIZE, WAVE_TIMER
@@ -54,10 +55,11 @@ class Game:
         self.money = STARTING_MONEY
         self.lifes = 10
         self.right_click = False
+        self.time_mutiplier_list = itertools.cycle([1, 2, 3, 4, 5])
+        self.time_multiplier = next(self.time_mutiplier_list)
         self.setup_waves()
         self.new()
         self.print = True
-        self.fast_forward = False
 
     # SETS THE FOLDER VARIABLES and BUILDS MAP FROM THE TMX FILE ETC
     def load_data(self):
@@ -261,6 +263,21 @@ class Game:
     def new_game(self):
         self.clock = pg.time.Clock()
 
+        self.money = STARTING_MONEY
+        self.lifes = 10
+        self.time = 0
+
+        self.setup_waves()
+
+        self.all_sprites = pg.sprite.Group()
+        self.mobs = pg.sprite.Group()
+        self.towers = pg.sprite.Group()
+        self.projectiles = pg.sprite.Group()
+        self.player = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
+
+        self.defeated = False
+
     # Basic implementation of waves (TODO: pack data into different form and make more elegant)
 
     def setup_waves(self):
@@ -350,8 +367,6 @@ class Game:
     # Deducts a life from the player and ends game upon losing all lifes
     def lose_life(self, number):
         self.lifes -= number
-        self.lifes_text = outline_text(self.lifes_font, str(
-            self.lifes), COLOURS["white"], COLOURS["black"])
         if self.lifes == 0:
             print("YOU LOST")
             self.defeated = True
@@ -440,6 +455,8 @@ class Game:
                         self.selected_tower.selected = False
                     self.selected_tower = tower
                     tower.selected = True
+            if self.status_bar.is_ff_button_clicked(mpos):
+                self.time_multiplier = next(self.time_mutiplier_list)
 
     def is_wave_active(self):
         return self.wave_active
@@ -482,7 +499,7 @@ class Game:
             i.update(dt)
 
         self.time += dt
-        self.status_bar.update(self.time, self.money, self.next_wave_timer)
+        self.status_bar.update(self.time, self.money, self.next_wave_timer, self.lifes, self.time_multiplier)
 
     # Draws the lifes, time, coins and images next to them
     def draw_HUD(self, screen):
@@ -513,9 +530,7 @@ class Game:
 
         while not self.defeated:
 
-            dt = self.clock.tick(FPS) / 1000
-            if self.fast_forward:
-                dt = dt*2
+            dt = (self.clock.tick(FPS) / 1000) * self.time_multiplier
             self.click = False
             self.mpos = pg.mouse.get_pos()
 

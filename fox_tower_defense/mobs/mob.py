@@ -279,8 +279,8 @@ class Mob(pg.sprite.Sprite):
 
     # the draw loop
     def draw(self, screen):
-        screen.blit(self.image, self.rect)
         screen.blit(self.shadow_surface, self.shadow_rect)
+        screen.blit(self.image, self.rect)
         for i in self.health_images:
             # print(i)
             screen.blit(i, (self.health_rect))

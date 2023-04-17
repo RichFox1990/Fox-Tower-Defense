@@ -17,12 +17,27 @@ class HudBottomBar:
         self.heart_image = self.game.images["heart"]
         self.coin_image = self.game.images["gold_star"]
         self._set_up()
+        self.previous_money_amount = self.game.money
+        self.previous_life_amount = self.game.lifes
+        self.previous_time_multiplier = self.game.time_multiplier
 
     def _set_up_clock_display(self):
         # Setup game Clock
         self.clock_font = pg.font.Font(None, 50, bold=True)
         self.clock_text = outline_text(
             self.clock_font, "00", COLOURS["white"], COLOURS["black"])
+        self.clock_rect = self.clock_text.get_rect(
+            center=(self.game.screen_width // 2, 20))
+
+    def _set_up_fast_forward(self):
+        self.ff_button = pg.Surface((25, 25))
+        self.ff_button.fill(COLOURS["honeydew"])
+        self.ff_rect = self.ff_button.get_rect(midleft=(self.clock_rect.midright + Vec(90, -2)))
+        self.ff_font = pg.font.Font(None, 25, bold=False)
+        self.ff_text = outline_text(
+            self.ff_font, "x1", COLOURS["red"], COLOURS["black"])
+        self.ff_text_rect = self.ff_text.get_rect(center=(self.ff_rect.center))
+
         self.clock_rect = self.clock_text.get_rect(
             center=(self.game.screen_width // 2, 20))
 
@@ -82,6 +97,7 @@ class HudBottomBar:
     def _set_up(self):
         self._set_up_bar_and_hammer_rects()
         self._set_up_clock_display()
+        self._set_up_fast_forward()
         self._set_up_coin_display()
         self._set_up_life_display()
         self._set_up_wave_skip_text_display()
@@ -89,22 +105,49 @@ class HudBottomBar:
         self._set_up_info_text_display()
         self._set_up_next_wave_countdown_bar()
 
-    def update(self, time_passed, money_amount, time_until_next_wave):
+    def update_coin_text(self, money_amount):
+        self.previous_money_amount = money_amount
+        self.coin_text = outline_text(self.coin_font, str(
+            money_amount), COLOURS["white"], COLOURS["black"])
+
+    def update_lifes_text(self, lifes):
+        self.previous_life_amount = lifes
+        self.lifes_text = outline_text(self.lifes_font, str(
+            lifes), COLOURS["white"], COLOURS["black"])
+        
+    def update_ff_text(self, time_multiplier):
+        self.previous_time_multiplier = time_multiplier
+        self.ff_text = outline_text(
+            self.ff_font, f"x{time_multiplier}", COLOURS["red"], COLOURS["black"])
+
+    def update(self, time_passed, money_amount, time_until_next_wave, lifes, time_multiplier):
         time_display = datetime.timedelta(seconds=int(time_passed))
 
         self.clock_text = outline_text(
             self.clock_font, str(time_display), COLOURS["white"], COLOURS["black"])
-        self.coin_text = outline_text(self.coin_font, str(
-            money_amount), COLOURS["white"], COLOURS["black"])
+
+        if time_multiplier is not self.previous_time_multiplier:
+            print( time_multiplier, self.previous_time_multiplier)
+            self.update_ff_text(time_multiplier)
+        if money_amount is not self.previous_money_amount:
+            self.update_coin_text(money_amount)
+        if lifes is not self.previous_life_amount:
+            self.update_lifes_text(lifes)
+
         self.wave_timer_bar = pg.transform.scale(self.wave_timer_bar_orginal, (275 * (time_until_next_wave / WAVE_TIMER), 15))
 
     def is_build_clicked_on(self, mpos):
         return self.construct_rect.collidepoint(mpos)
+    
+    def is_ff_button_clicked(self, mpos):
+        return self.ff_rect.collidepoint(mpos)
 
     def draw(self, screen):
         spacer = Vec(5, 1)
         screen.blit(self.bottom_bar_background_image, self.bottom_bar_rect)
         screen.blit(self.clock_text, self.clock_rect)  # Blit game clock
+        screen.blit(self.ff_button, self.ff_rect)  # Blit fast forward button
+        screen.blit(self.ff_text, self.ff_text_rect)  # Blit fast forward text
         screen.blit(self.coin_text, self.coin_rect)  # Blit money amount
         screen.blit(self.heart_image,
                     self.heart_image.get_rect(midright=self.lifes_rect.midleft - spacer))  # + self.lifes_rect.y))
